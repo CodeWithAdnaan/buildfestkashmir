@@ -1,0 +1,270 @@
+@import "tailwindcss";
+@plugin "tailwindcss-animate";
+
+/* ==========================================================================
+   BuildFest Kashmir — Design Tokens v2
+   "Modern developer ecosystem", not editorial magazine.
+   Dark canvas by default. Saffron stays the one brand accent that makes this
+   feel like BuildFest and not a generic dev-tool template — everything else
+   (grid, glass, gradient mesh, motion) is straight out of the Vercel /
+   Linear / Clerk / Convex / Raycast school.
+   ========================================================================== */
+
+:root {
+  /* canvas */
+  --color-canvas: #0a0d0c;
+  --color-canvas-raised: #101413;
+  --color-canvas-overlay: #161b19;
+
+  /* brand */
+  --color-saffron: #f0a53d;
+  --color-saffron-dim: #d98e2b;
+  --color-pine: #1b3f34;
+  --color-pine-glow: #2f6e56;
+  --color-rust: #c0552f;
+
+  /* ink on dark */
+  --color-ink: #f6f5f2;
+  --color-ink-muted: #a3a8a5;
+  --color-ink-faint: #6b716e;
+
+  /* glass surfaces */
+  --glass-bg: rgba(246, 245, 242, 0.045);
+  --glass-bg-hover: rgba(246, 245, 242, 0.08);
+  --glass-border: rgba(246, 245, 242, 0.1);
+  --glass-border-hover: rgba(240, 165, 61, 0.4);
+
+  /* shadcn/ui semantic tokens mapped onto the dark canvas */
+  --background: var(--color-canvas);
+  --foreground: var(--color-ink);
+  --card: var(--color-canvas-raised);
+  --card-foreground: var(--color-ink);
+  --popover: var(--color-canvas-raised);
+  --popover-foreground: var(--color-ink);
+  --primary: var(--color-saffron);
+  --primary-foreground: #1a1103;
+  --secondary: var(--color-canvas-overlay);
+  --secondary-foreground: var(--color-ink);
+  --muted: var(--color-canvas-overlay);
+  --muted-foreground: var(--color-ink-muted);
+  --accent: var(--color-saffron);
+  --accent-foreground: #1a1103;
+  --destructive: var(--color-rust);
+  --destructive-foreground: var(--color-ink);
+  --border: var(--glass-border);
+  --input: rgba(246, 245, 242, 0.12);
+  --ring: var(--color-saffron);
+  --radius: 0.75rem;
+}
+
+@theme inline {
+  --color-canvas: var(--color-canvas);
+  --color-canvas-raised: var(--color-canvas-raised);
+  --color-canvas-overlay: var(--color-canvas-overlay);
+  --color-saffron: var(--color-saffron);
+  --color-saffron-dim: var(--color-saffron-dim);
+  --color-pine: var(--color-pine);
+  --color-pine-glow: var(--color-pine-glow);
+  --color-rust: var(--color-rust);
+  --color-ink: var(--color-ink);
+  --color-ink-muted: var(--color-ink-muted);
+  --color-ink-faint: var(--color-ink-faint);
+
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: var(--radius);
+  --radius-lg: calc(var(--radius) + 4px);
+  --radius-xl: calc(var(--radius) + 10px);
+
+  --container-content: 1320px;
+
+  --animate-pulse-dot: pulse-dot 2s infinite;
+  --animate-marquee: marquee 30s linear infinite;
+  --animate-float: float 7s ease-in-out infinite;
+  --animate-shimmer: shimmer 2.5s linear infinite;
+  --animate-in: fade-in 0.6s ease forwards;
+}
+
+@keyframes pulse-dot {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.35;
+  }
+}
+@keyframes marquee {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+@keyframes float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-14px);
+  }
+}
+@keyframes shimmer {
+  from {
+    background-position: -200% 0;
+  }
+  to {
+    background-position: 200% 0;
+  }
+}
+@keyframes fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+@keyframes accordion-down {
+  from {
+    height: 0;
+  }
+  to {
+    height: var(--radix-accordion-content-height);
+  }
+}
+@keyframes accordion-up {
+  from {
+    height: var(--radix-accordion-content-height);
+  }
+  to {
+    height: 0;
+  }
+}
+
+@layer base {
+  * {
+    border-color: var(--color-border);
+  }
+  html {
+    scroll-behavior: smooth;
+    background: var(--color-canvas);
+  }
+  body {
+    background: var(--color-canvas);
+    color: var(--color-ink);
+    font-family: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+  ::selection {
+    background: var(--color-saffron);
+    color: #1a1103;
+  }
+  :focus-visible {
+    outline: 2px solid var(--color-saffron);
+    outline-offset: 3px;
+  }
+}
+
+@layer utilities {
+  .container-content {
+    max-width: var(--container-content);
+    margin-inline: auto;
+    padding-inline: 1.5rem;
+  }
+  @media (min-width: 768px) {
+    .container-content {
+      padding-inline: 2.5rem;
+    }
+  }
+
+  /* Glass surface used by every bento card */
+  .glass {
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+  }
+  .glass-hover {
+    transition: background-color 0.35s ease, border-color 0.35s ease, transform 0.35s ease;
+  }
+  .glass-hover:hover {
+    background: var(--glass-bg-hover);
+    border-color: var(--glass-border-hover);
+  }
+
+  /* Fine dot grid used behind hero / bento section */
+  .bg-grid-dots {
+    background-image: radial-gradient(circle, rgba(246, 245, 242, 0.08) 1px, transparent 1px);
+    background-size: 28px 28px;
+  }
+
+  /* Noise-free ambient radial glows, reused across sections via inline style vars */
+  .glow-saffron {
+    background: radial-gradient(circle, rgba(240, 165, 61, 0.35), transparent 70%);
+  }
+  .glow-pine {
+    background: radial-gradient(circle, rgba(47, 110, 86, 0.4), transparent 70%);
+  }
+
+  .text-gradient {
+    background: linear-gradient(180deg, var(--color-ink) 20%, rgba(246, 245, 242, 0.55));
+    background-clip: text;
+    -webkit-background-clip: text;
+    color: transparent;
+  }
+
+  .shimmer-text {
+    background: linear-gradient(
+      100deg,
+      var(--color-ink) 40%,
+      var(--color-saffron) 50%,
+      var(--color-ink) 60%
+    );
+    background-size: 200% auto;
+    background-clip: text;
+    -webkit-background-clip: text;
+    color: transparent;
+    animation: shimmer 3s linear infinite;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}

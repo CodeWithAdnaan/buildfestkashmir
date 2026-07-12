@@ -1,0 +1,91 @@
+/**
+ * Hand-authored placeholder for the generated Supabase types.
+ * Once the project is linked, replace this file with:
+ *
+ *   npx supabase gen types typescript --project-id <ref> > src/lib/supabase/types.ts
+ *
+ * Shape mirrors supabase/schema.sql so the app compiles correctly today
+ * and the migration to generated types later is a drop-in swap.
+ */
+export interface Database {
+  public: {
+    Tables: {
+      registrations: {
+        Row: {
+          id: string;
+          created_at: string;
+          event_slug: string;
+          full_name: string;
+          email: string;
+          college: string;
+          branch: string;
+          experience_level: "beginner" | "intermediate" | "advanced";
+          github_url: string | null;
+          linkedin_url: string | null;
+          discord_handle: string | null;
+          team_name: string | null;
+        };
+        Insert: {
+          id?: string;
+          created_at?: string;
+          event_slug: string;
+          full_name: string;
+          email: string;
+          college: string;
+          branch: string;
+          experience_level: "beginner" | "intermediate" | "advanced";
+          github_url?: string | null;
+          linkedin_url?: string | null;
+          discord_handle?: string | null;
+          team_name?: string | null;
+        };
+        Update: Partial<Database["public"]["Tables"]["registrations"]["Insert"]>;
+        Relationships: [];
+      };
+      team_applications: {
+        Row: {
+          id: string;
+          created_at: string;
+          role: string;
+          full_name: string;
+          email: string;
+          message: string;
+        };
+        Insert: {
+          id?: string;
+          created_at?: string;
+          role: string;
+          full_name: string;
+          email: string;
+          message: string;
+        };
+        Update: Partial<Database["public"]["Tables"]["team_applications"]["Insert"]>;
+        Relationships: [];
+      };
+      contact_messages: {
+        Row: {
+          id: string;
+          created_at: string;
+          full_name: string;
+          email: string;
+          subject: string;
+          message: string;
+        };
+        Insert: {
+          id?: string;
+          created_at?: string;
+          full_name: string;
+          email: string;
+          subject: string;
+          message: string;
+        };
+        Update: Partial<Database["public"]["Tables"]["contact_messages"]["Insert"]>;
+        Relationships: [];
+      };
+    };
+    Views: Record<string, never>;
+    Functions: Record<string, never>;
+    Enums: Record<string, never>;
+    CompositeTypes: Record<string, never>;
+  };
+}
