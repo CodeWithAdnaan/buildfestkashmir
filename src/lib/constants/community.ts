@@ -41,7 +41,22 @@ export const roadmap = [
 ];
 
 export const openSourceProjects = [
-  { name: "KashEdu", description: "Offline-first AI doubt-solver for rural students", stars: 6 },
-  { name: "JourneyMate", description: "Kashmir tourism discovery app", stars: 22 },
-  { name: "buildfestkashmir.org", description: "This website — open for any chapter to fork", stars: 38 },
+  {
+    name: "BuildFest Kashmir Web App",
+    description: "This production platform — open source Next.js 16 + Supabase website",
+    stars: 38,
+    url: "https://github.com/CodeWithAdnaan/buildfestkashmir",
+  },
+  {
+    name: "KashEdu",
+    description: "Offline-first AI doubt-solver for rural students",
+    stars: 14,
+    url: "https://github.com/CodeWithAdnaan/buildfestkashmir",
+  },
+  {
+    name: "JourneyMate",
+    description: "Kashmir tourism discovery app",
+    stars: 22,
+    url: "https://github.com/CodeWithAdnaan/buildfestkashmir",
+  },
 ];

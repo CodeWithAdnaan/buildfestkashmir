@@ -10,7 +10,7 @@ export const siteConfig = {
   founded: 2023,
   links: {
     instagram: "https://instagram.com/buildfestkashmir",
-    github: "https://github.com/buildfestkashmir",
+    github: "https://github.com/CodeWithAdnaan/buildfestkashmir",
     discord: "https://discord.gg/buildfestkashmir",
     twitter: "https://twitter.com/buildfestkmr",
   },
