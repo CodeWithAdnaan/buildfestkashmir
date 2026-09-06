@@ -17,13 +17,13 @@ interface EventPageProps {
 }
 
 export function generateStaticParams() {
-  return events.filter((event) => !event.isTentative).map((event) => ({ slug: event.slug }));
+  return events.map((event) => ({ slug: event.slug }));
 }
 
 export async function generateMetadata({ params }: EventPageProps): Promise<Metadata> {
   const { slug } = await params;
   const event = getEventBySlug(slug);
-  if (!event || event.isTentative) return {};
+  if (!event) return {};
 
   return {
     title: event.name,
@@ -40,7 +40,7 @@ export default async function EventDetailPage({ params }: EventPageProps) {
   const { slug } = await params;
   const event = getEventBySlug(slug);
 
-  if (!event || event.isTentative) notFound();
+  if (!event) notFound();
 
   return (
     <>

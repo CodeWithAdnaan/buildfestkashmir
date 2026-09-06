@@ -13,7 +13,7 @@ const connectLinks = [
 ];
 
 export function SiteFooter() {
-  const registerHref = featuredEvent ? `/events/${featuredEvent.slug}/register` : "/events";
+  const registerHref = "/events";
   const involvedLinks = [
     { label: "Register", href: registerHref },
     { label: "Join the team", href: "/team/join" },

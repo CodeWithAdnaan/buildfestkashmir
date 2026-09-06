@@ -4,12 +4,70 @@
  *
  *   npx supabase gen types typescript --project-id <ref> > src/lib/supabase/types.ts
  *
- * Shape mirrors supabase/schema.sql so the app compiles correctly today
+ * Shape mirrors supabase/schema.sql & migrations so the app compiles correctly
  * and the migration to generated types later is a drop-in swap.
  */
 export interface Database {
   public: {
     Tables: {
+      posts: {
+        Row: {
+          id: string;
+          slug: string;
+          title: string;
+          excerpt: string;
+          date: string;
+          author: string;
+          author_role: string;
+          read_time: string;
+          tags: string[];
+          gradient: string;
+          image: string | null;
+          content: string[];
+          published: boolean;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          slug: string;
+          title: string;
+          excerpt: string;
+          date: string;
+          author: string;
+          author_role: string;
+          read_time: string;
+          tags?: string[];
+          gradient: string;
+          image?: string | null;
+          content?: string[];
+          published?: boolean;
+          created_at?: string;
+        };
+        Update: Partial<Database["public"]["Tables"]["posts"]["Insert"]>;
+        Relationships: [];
+      };
+      profiles: {
+        Row: {
+          id: string;
+          updated_at: string;
+          full_name: string;
+          avatar_url: string | null;
+          github_url: string | null;
+          linkedin_url: string | null;
+          college: string | null;
+        };
+        Insert: {
+          id: string;
+          updated_at?: string;
+          full_name: string;
+          avatar_url?: string | null;
+          github_url?: string | null;
+          linkedin_url?: string | null;
+          college?: string | null;
+        };
+        Update: Partial<Database["public"]["Tables"]["profiles"]["Insert"]>;
+        Relationships: [];
+      };
       registrations: {
         Row: {
           id: string;

@@ -41,7 +41,7 @@ export const roadmap = [
 ];
 
 export const openSourceProjects = [
-  { name: "KashEdu", description: "Offline-first AI doubt-solver for rural students", stars: 140 },
-  { name: "JourneyMate", description: "Kashmir tourism discovery app", stars: 62 },
+  { name: "KashEdu", description: "Offline-first AI doubt-solver for rural students", stars: 6 },
+  { name: "JourneyMate", description: "Kashmir tourism discovery app", stars: 22 },
   { name: "buildfestkashmir.org", description: "This website — open for any chapter to fork", stars: 38 },
 ];

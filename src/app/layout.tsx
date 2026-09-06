@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { fontVariables } from "@/config/fonts";
 import { SmoothScrollProvider } from "@/components/providers/smooth-scroll-provider";
+import { AuthProvider } from "@/components/providers/auth-provider";
 import { AmbientBackground } from "@/components/shared/ambient-background";
 import { siteConfig } from "@/lib/constants/site";
 import "./globals.css";
@@ -46,7 +47,9 @@ export default function RootLayout({
     <html lang="en" className={fontVariables}>
       <body className="bg-canvas font-sans text-ink antialiased">
         <AmbientBackground />
-        <SmoothScrollProvider>{children}</SmoothScrollProvider>
+        <AuthProvider>
+          <SmoothScrollProvider>{children}</SmoothScrollProvider>
+        </AuthProvider>
       </body>
     </html>
   );

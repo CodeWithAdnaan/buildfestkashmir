@@ -1,10 +1,10 @@
 export const partners: string[] = [
   "CASET College",
-  "NIT Srinagar",
-  "Kashmir University",
-  "IUST",
+  "MASTRA AI",
+  "MAJOR LEAGUE HACKING",
+  "WEBRYX.IN",
   "Devfolio",
   "GitHub Education",
-  "Vercel",
-  "Supabase",
+  "HACK2SKILL",
+  "GOOGLE-FOR-DEVELOPERS",
 ];

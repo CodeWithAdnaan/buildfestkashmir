@@ -8,5 +8,6 @@ export interface BlogPost {
   readTime: string;
   tags: string[];
   gradient: string;
+  image?: string;
   content: string[]; // paragraphs
 }

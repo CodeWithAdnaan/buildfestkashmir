@@ -83,9 +83,9 @@ function FeaturedEventCard() {
       </div>
 
       {isTentative ? (
-        <Button asChild variant="outline" className="mt-6 w-fit">
-          <Link href={featuredEvent.slug} target="_blank" rel="noopener noreferrer">
-            Follow for updates <ArrowUpRight className="h-4 w-4" />
+        <Button asChild variant="ghost" className="mt-6 w-fit border-border hover:bg-canvas-raised">
+          <Link href={`/events/${featuredEvent.slug}`}>
+            View Event Details <ArrowUpRight className="h-4 w-4" />
           </Link>
         </Button>
       ) : (

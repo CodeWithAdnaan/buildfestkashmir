@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { notFound } from "next/navigation";
+import { redirect } from "next/navigation";
 import { SiteHeader } from "@/components/layout/site-header";
 import { SiteFooter } from "@/components/layout/site-footer";
 import { PillBadge } from "@/components/shared/pill-badge";
@@ -12,7 +12,7 @@ interface RegisterPageProps {
 }
 
 export function generateStaticParams() {
-  return events.filter((e) => e.registrationOpen).map((event) => ({ slug: event.slug }));
+  return events.map((event) => ({ slug: event.slug }));
 }
 
 export async function generateMetadata({ params }: RegisterPageProps): Promise<Metadata> {
@@ -30,7 +30,9 @@ export default async function RegisterPage({ params }: RegisterPageProps) {
   const { slug } = await params;
   const event = getEventBySlug(slug);
 
-  if (!event || !event.registrationOpen) notFound();
+  if (!event || !event.registrationOpen) {
+    redirect("/events");
+  }
 
   return (
     <>

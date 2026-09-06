@@ -56,4 +56,5 @@ export interface BuildFestEvent {
   isTentative?: boolean;
   dateLabel?: string;
   venueLabel?: string;
+  bannerImage?: string;
 }

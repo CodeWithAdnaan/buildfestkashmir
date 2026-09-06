@@ -2,6 +2,7 @@
 
 import { createClient } from "@/lib/supabase/server";
 import { registrationSchema, type RegistrationValues } from "@/lib/validations/registration";
+import { sendRegistrationConfirmationEmail } from "@/lib/email";
 
 interface RegisterResult {
   success: boolean;
@@ -12,8 +13,7 @@ interface RegisterResult {
 /**
  * Server Action — validates the submission again server-side (never trust
  * client validation alone) and inserts it into the `registrations` table.
- * Row Level Security (see supabase/migrations/0001_init.sql) allows public
- * inserts but no public reads, so this is safe to call from the client form.
+ * Also triggers email confirmation notification.
  */
 export async function registerForEvent(
   eventSlug: string,
@@ -49,6 +49,16 @@ export async function registerForEvent(
       error: "Couldn't submit your registration right now — please try again in a moment.",
     };
   }
+
+  // Trigger confirmation email notification asynchronously
+  sendRegistrationConfirmationEmail({
+    to: parsed.data.email,
+    fullName: parsed.data.fullName,
+    eventSlug,
+    registrationId: data.id,
+  }).catch((err) => {
+    console.error("Failed to send registration email:", err);
+  });
 
   return { success: true, registrationId: data.id };
 }

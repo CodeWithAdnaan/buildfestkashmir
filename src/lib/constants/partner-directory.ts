@@ -7,7 +7,7 @@ export interface Partner {
 
 export const partnerDirectory: Partner[] = [
   {
-    name: "Devfolio",
+    name: "MAJOR LEAGUE HACKING",
     tier: "Title",
     description: "Title sponsor for HACKDAYS since 2026 — hosts our registration and judging platform.",
     url: "https://devfolio.co",
@@ -19,16 +19,16 @@ export const partnerDirectory: Partner[] = [
     url: "https://education.github.com",
   },
   {
-    name: "Vercel",
+    name: "GOOGLE GEMINI",
     tier: "Gold",
-    description: "Hosting partner — every team's hackathon project gets a free Vercel deployment.",
-    url: "https://vercel.com",
+    description: "Technology and AI partner, providing free ai and api to students of every possible  google platform.",
+    url: "https://gemini.google.com",
   },
   {
-    name: "Supabase",
+    name: "Hack2Skill",
     tier: "Silver",
-    description: "Backend partner, and where two of our own mentors work as product engineers.",
-    url: "https://supabase.com",
+    description: "providing winning kits and prize money for young developers.",
+    url: "https://hack2skill.com",
   },
   {
     name: "CASET College",
@@ -37,10 +37,10 @@ export const partnerDirectory: Partner[] = [
     url: "https://buildfestkashmir.org",
   },
   {
-    name: "NIT Srinagar",
+    name: "MASTRA AI",
     tier: "Community",
-    description: "Hosts our Innovation Lab for the quarterly Open Source Sprint.",
-    url: "https://buildfestkashmir.org",
+    description: "Provides educations materials and even hard copy of books and other goddiees for every single participant",
+    url: "https://mastra.ai",
   },
   {
     name: "Kashmir University",
@@ -49,10 +49,10 @@ export const partnerDirectory: Partner[] = [
     url: "https://buildfestkashmir.org",
   },
   {
-    name: "IUST",
+    name: "WEBRYX.IN",
     tier: "Community",
-    description: "Hosted the Winter Workshop Series across six evening sessions.",
-    url: "https://buildfestkashmir.org",
+    description: "Core company behind buildfest-kashmir ",
+    url: "https://webryx.in",
   },
 ];
 

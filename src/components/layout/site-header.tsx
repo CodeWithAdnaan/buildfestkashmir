@@ -4,16 +4,15 @@ import Link from "next/link";
 import Image from "next/image";
 import { Menu } from "lucide-react";
 import { useScrollHeader } from "@/hooks/use-scroll-header";
-import { ChinarLeaf } from "@/components/shared/chinar-leaf";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetTrigger, SheetContent, SheetClose } from "@/components/ui/sheet";
 import { mainNav, siteConfig } from "@/lib/constants/site";
-import { featuredEvent } from "@/lib/constants/events";
+import { UserNav } from "@/components/layout/user-nav";
 import { cn } from "@/lib/utils";
 
 export function SiteHeader() {
   const scrolled = useScrollHeader(24);
-  const registerHref = featuredEvent ? `/events/${featuredEvent.slug}/register` : "/events";
+  const registerHref = "/events";
 
   return (
     <header className="fixed inset-x-0 top-0 z-50 px-4 pt-4 sm:px-6">
@@ -38,13 +37,15 @@ export function SiteHeader() {
           ))}
         </nav>
 
-        <div className="hidden items-center gap-2 pr-1 md:flex">
+        <div className="hidden items-center gap-3 pr-1 md:flex">
           <Button asChild variant="ghost" size="sm">
             <Link href="/team/join">Join Team</Link>
           </Button>
           <Button asChild size="sm">
             <Link href={registerHref}>Register</Link>
           </Button>
+          <div className="h-4 w-px bg-border/80" />
+          <UserNav />
         </div>
 
         <Sheet>
@@ -54,9 +55,11 @@ export function SiteHeader() {
             </button>
           </SheetTrigger>
           <SheetContent>
-            <div className="flex items-center gap-3 font-semibold text-ink">
-              <Image src="/logo.png" alt="BuildFest logo" width={68} height={68} />
-              {siteConfig.name}
+            <div className="flex items-center justify-between gap-3 font-semibold text-ink">
+              <div className="flex items-center gap-3">
+                <Image src="/logo.png" alt="BuildFest logo" width={68} height={68} />
+                {siteConfig.name}
+              </div>
             </div>
             <nav className="flex flex-col gap-1 pt-4">
               {mainNav.map((item) => (
@@ -67,7 +70,8 @@ export function SiteHeader() {
                 </SheetClose>
               ))}
             </nav>
-            <div className="mt-auto flex flex-col gap-3">
+            <div className="mt-auto flex flex-col gap-3 pt-6">
+              <UserNav />
               <Button asChild variant="ghost">
                 <Link href="/team/join">Join Team</Link>
               </Button>
