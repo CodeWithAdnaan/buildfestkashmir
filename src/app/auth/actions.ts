@@ -1,5 +1,6 @@
 "use server";
 
+import { headers } from "next/headers";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
@@ -60,6 +61,11 @@ export async function signUpWithEmail(
 
   const supabase = await createClient();
 
+  const headerList = await headers();
+  const host = headerList.get("x-forwarded-host") || headerList.get("host");
+  const proto = headerList.get("x-forwarded-proto") || (host?.includes("localhost") ? "http" : "https");
+  const origin = host ? `${proto}://${host}` : (process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000");
+
   const { data, error } = await supabase.auth.signUp({
     email,
     password,
@@ -67,6 +73,7 @@ export async function signUpWithEmail(
       data: {
         full_name: fullName,
       },
+      emailRedirectTo: `${origin}/auth/callback?next=/`,
     },
   });
 

@@ -23,9 +23,18 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [session, setSession] = useState<Session | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
+  const isConfigured = Boolean(
+    process.env.NEXT_PUBLIC_SUPABASE_URL && process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
+  );
+
   const supabase = useMemo(() => createClient(), []);
 
   useEffect(() => {
+    if (!isConfigured) {
+      setIsLoading(false);
+      return;
+    }
+
     // Initial session check
     supabase.auth.getSession().then(({ data: { session: initialSession } }) => {
       setSession(initialSession);
@@ -45,10 +54,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     return () => {
       subscription.unsubscribe();
     };
-  }, [supabase]);
+  }, [supabase, isConfigured]);
 
   const signOut = async () => {
-    await supabase.auth.signOut();
+    if (isConfigured) {
+      await supabase.auth.signOut();
+    }
   };
 
   return (
