@@ -1,6 +1,6 @@
 -- BuildFest Kashmir — Supabase Storage Buckets & Policies
 
--- Create storage buckets if they don't exist
+-- Create storage buckets agar ni ae toh...vrna bhoosda ni kryo poore code kaaa
 insert into storage.buckets (id, name, public)
 values 
   ('avatars', 'avatars', true),
