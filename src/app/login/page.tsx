@@ -1,8 +1,8 @@
 "use client";
 
-import { useActionState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
-import { Lock, Mail, ArrowRight, AlertCircle } from "lucide-react";
+import { Lock, Mail, ArrowRight, AlertCircle, Loader2 } from "lucide-react";
 import { SiteHeader } from "@/components/layout/site-header";
 import { SiteFooter } from "@/components/layout/site-footer";
 import { Reveal } from "@/components/shared/reveal";
@@ -10,13 +10,57 @@ import { PillBadge } from "@/components/shared/pill-badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { signInWithEmail, type AuthActionResult } from "@/app/auth/actions";
+import { createClient } from "@/lib/supabase/client";
 
 export default function LoginPage() {
-  const [state, formAction, isPending] = useActionState<AuthActionResult | null, FormData>(
-    signInWithEmail,
-    null,
-  );
+  const [error, setError] = useState<string | null>(null);
+  const [isPending, setIsPending] = useState(false);
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const params = new URLSearchParams(window.location.search);
+      const urlError = params.get("error");
+      if (urlError) {
+        setError(decodeURIComponent(urlError));
+      }
+    }
+  }, []);
+
+  const handleSignIn = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setIsPending(true);
+    setError(null);
+
+    const formData = new FormData(e.currentTarget);
+    const email = formData.get("email")?.toString().trim();
+    const password = formData.get("password")?.toString();
+
+    if (!email || !password) {
+      setError("Please provide both email and password.");
+      setIsPending(false);
+      return;
+    }
+
+    try {
+      const supabase = createClient();
+      const { error: authError } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      });
+
+      if (authError) {
+        setError(authError.message);
+        setIsPending(false);
+        return;
+      }
+
+      // Hard redirect to home to refresh cookies and server-rendered components
+      window.location.href = "/";
+    } catch (err: any) {
+      setError(err?.message || "An unexpected error occurred.");
+      setIsPending(false);
+    }
+  };
 
   return (
     <>
@@ -35,11 +79,11 @@ export default function LoginPage() {
 
           <Reveal delay={0.05} className="mt-8">
             <div className="glass rounded-3xl border border-border p-6 sm:p-8">
-              <form action={formAction} className="flex flex-col gap-5">
-                {state?.error && (
+              <form onSubmit={handleSignIn} className="flex flex-col gap-5">
+                {error && (
                   <div className="flex items-center gap-2.5 rounded-xl border border-rose-500/30 bg-rose-500/10 p-3.5 text-xs text-rose-300 font-mono">
                     <AlertCircle className="h-4 w-4 shrink-0 text-rose-400" />
-                    <span>{state.error}</span>
+                    <span>{error}</span>
                   </div>
                 )}
 

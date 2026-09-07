@@ -4,6 +4,7 @@ import { SmoothScrollProvider } from "@/components/providers/smooth-scroll-provi
 import { AuthProvider } from "@/components/providers/auth-provider";
 import { AmbientBackground } from "@/components/shared/ambient-background";
 import { siteConfig } from "@/lib/constants/site";
+import { createClient } from "@/lib/supabase/server";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -40,14 +41,25 @@ export const viewport = {
   themeColor: "#0a0d0c",
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
+  let user = null;
+  try {
+    const supabase = await createClient();
+    const {
+      data: { user: currentUser },
+    } = await supabase.auth.getUser();
+    user = currentUser;
+  } catch {
+    // Graceful fallback during build / without credentials
+  }
+
   return (
     <html lang="en" className={fontVariables}>
       <body className="bg-canvas font-sans text-ink antialiased">
         <AmbientBackground />
-        <AuthProvider>
+        <AuthProvider initialUser={user}>
           <SmoothScrollProvider>{children}</SmoothScrollProvider>
         </AuthProvider>
       </body>

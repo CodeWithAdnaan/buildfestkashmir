@@ -18,27 +18,38 @@ const AuthContext = createContext<AuthContextType>({
   signOut: async () => {},
 });
 
-export function AuthProvider({ children }: { children: React.ReactNode }) {
-  const [user, setUser] = useState<User | null>(null);
-  const [session, setSession] = useState<Session | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
+interface AuthProviderProps {
+  children: React.ReactNode;
+  initialUser?: User | null;
+}
 
-  const isConfigured = Boolean(
-    process.env.NEXT_PUBLIC_SUPABASE_URL && process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
-  );
+export function AuthProvider({
+  children,
+  initialUser = null,
+}: AuthProviderProps) {
+  const [user, setUser] = useState<User | null>(initialUser);
+  const [session, setSession] = useState<Session | null>(null);
+  const [isLoading, setIsLoading] = useState(!initialUser);
 
   const supabase = useMemo(() => createClient(), []);
 
+  // Sync state if initialUser from Server Component changes
   useEffect(() => {
-    if (!isConfigured) {
+    if (initialUser !== undefined) {
+      setUser(initialUser);
       setIsLoading(false);
-      return;
     }
+  }, [initialUser]);
 
+  useEffect(() => {
     // Initial session check
     supabase.auth.getSession().then(({ data: { session: initialSession } }) => {
-      setSession(initialSession);
-      setUser(initialSession?.user ?? null);
+      if (initialSession) {
+        setSession(initialSession);
+        setUser(initialSession.user);
+      }
+      setIsLoading(false);
+    }).catch(() => {
       setIsLoading(false);
     });
 
@@ -54,12 +65,15 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     return () => {
       subscription.unsubscribe();
     };
-  }, [supabase, isConfigured]);
+  }, [supabase]);
 
   const signOut = async () => {
-    if (isConfigured) {
+    try {
       await supabase.auth.signOut();
-    }
+    } catch {}
+    setUser(null);
+    setSession(null);
+    window.location.href = "/";
   };
 
   return (
