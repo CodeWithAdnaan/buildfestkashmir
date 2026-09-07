@@ -1,4 +1,4 @@
--- BuildFest Kashmir — initial schema
+-- BuildFest Kashmir — initial schema( cheeed chaad ni krnaaa initial hai)
 -- Run via: npx supabase db push  (or paste into the Supabase SQL editor)
 
 create table if not exists public.registrations (
