@@ -14,6 +14,8 @@ export default function sitemap(): MetadataRoute.Sitemap {
     "/blog",
     "/partners",
     "/contact",
+    "/privacy",
+    "/terms",
   ];
   const staticRoutes: MetadataRoute.Sitemap = routes.map((route) => ({
     url: `${siteConfig.url}${route}`,

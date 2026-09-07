@@ -41,11 +41,21 @@ export function SiteFooter() {
           <FooterColumn title="Connect" links={connectLinks} />
         </div>
 
-        <div className="flex flex-wrap items-center justify-between gap-3 pt-6 font-mono text-xs text-ink-faint">
+        <div className="flex flex-wrap items-center justify-between gap-4 pt-6 font-mono text-xs text-ink-faint">
           <span>
             © {new Date().getFullYear()} {siteConfig.name}. Built by students, for students.
           </span>
-          <span>{siteConfig.location}</span>
+          <div className="flex flex-wrap items-center gap-3 sm:gap-4">
+            <Link href="/privacy" className="hover:text-ink transition-colors">
+              Privacy Policy
+            </Link>
+            <span>·</span>
+            <Link href="/terms" className="hover:text-ink transition-colors">
+              Terms & Conditions
+            </Link>
+            <span>·</span>
+            <span>{siteConfig.location}</span>
+          </div>
         </div>
       </div>
     </footer>
