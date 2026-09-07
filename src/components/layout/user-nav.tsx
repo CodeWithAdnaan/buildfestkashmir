@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { User as UserIcon, LogOut, ChevronDown } from "lucide-react";
+import { User as UserIcon, LogOut, ChevronDown, ShieldCheck } from "lucide-react";
 import { useAuth } from "@/components/providers/auth-provider";
 import { Button } from "@/components/ui/button";
 
@@ -74,7 +74,7 @@ export function UserNav() {
               <p className="font-mono text-[11px] text-ink-muted truncate">{user.email}</p>
             </div>
 
-            <div className="py-1">
+            <div className="py-1 space-y-0.5">
               <Link
                 href="/profile"
                 onClick={() => setIsOpen(false)}
@@ -82,6 +82,14 @@ export function UserNav() {
               >
                 <UserIcon className="h-4 w-4 text-saffron" />
                 <span>My Profile</span>
+              </Link>
+              <Link
+                href="/admin"
+                onClick={() => setIsOpen(false)}
+                className="flex items-center gap-2.5 rounded-xl px-3 py-2 text-xs font-mono text-ink-muted transition-colors hover:bg-canvas-overlay hover:text-ink"
+              >
+                <ShieldCheck className="h-4 w-4 text-amber-400" />
+                <span>Organizer Panel</span>
               </Link>
             </div>
 
