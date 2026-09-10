@@ -1,0 +1,12 @@
+# BuildFest Kashmir - Robots.txt
+User-agent: *
+Allow: /
+
+# Block authentication & private dashboard routes
+Disallow: /admin/
+Disallow: /auth/
+Disallow: /reset-password
+Disallow: /profile
+Disallow: /api/
+
+Sitemap: https://buildfestkashmir.xyz/sitemap.xml

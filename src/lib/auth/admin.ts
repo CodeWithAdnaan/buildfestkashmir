@@ -14,7 +14,7 @@ export interface AdminSession {
  */
 const SUPERADMIN_EMAILS = [
   "khandayadnan59@gmail.com",
-  "contact@buildfestkashmir.org",
+  "contact@buildfestkashmir.xyz",
 ];
 
 export async function getCurrentAdmin(): Promise<AdminSession | null> {

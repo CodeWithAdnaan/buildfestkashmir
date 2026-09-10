@@ -15,7 +15,7 @@ export function SocialShare({ title, slug }: SocialShareProps) {
     if (typeof window !== "undefined") {
       return `${window.location.origin}/blog/${slug}`;
     }
-    return `https://buildfestkashmir.com/blog/${slug}`;
+    return `https://buildfestkashmir.xyz/blog/${slug}`;
   };
 
   const handleCopy = async () => {

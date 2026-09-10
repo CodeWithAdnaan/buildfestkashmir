@@ -17,7 +17,7 @@ export function buildIcsDataUrl(event: IcsEventInput) {
     "VERSION:2.0",
     "PRODID:-//BuildFest Kashmir//Registration//EN",
     "BEGIN:VEVENT",
-    `UID:${crypto.randomUUID()}@buildfestkashmir.org`,
+    `UID:${crypto.randomUUID()}@buildfestkashmir.xyz`,
     `DTSTAMP:${toIcsDate(new Date().toISOString())}`,
     `DTSTART:${toIcsDate(event.startIso)}`,
     `DTEND:${toIcsDate(event.endIso)}`,

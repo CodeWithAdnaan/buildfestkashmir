@@ -44,7 +44,7 @@ export async function sendRegistrationConfirmationEmail({
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          from: "BuildFest Kashmir <notifications@buildfestkashmir.com>",
+          from: "BuildFest Kashmir <notifications@buildfestkashmir.xyz>",
           to: [to],
           subject,
           html: htmlContent,

@@ -4,9 +4,9 @@ export const siteConfig = {
   tagline: "Build. Innovate. Inspire.",
   description:
     "Kashmir's student developer community — hackathons, workshops, open-source, and startups, built by students, for students.",
-  url: "https://buildfestkashmir.org",
+  url: "https://buildfestkashmir.xyz",
   location: "Srinagar, Jammu & Kashmir",
-  email: "contact@buildfestkashmir.org",
+  email: "contact@buildfestkashmir.xyz",
   founded: 2023,
   links: {
     instagram: "https://instagram.com/buildfestkashmir",

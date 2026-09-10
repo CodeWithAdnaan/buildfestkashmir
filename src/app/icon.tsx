@@ -18,18 +18,15 @@ export default function Icon() {
           alignItems: "center",
           justifyContent: "center",
           borderRadius: "50%",
-          overflow: "hidden",
           background: "#0d1117",
+          border: "1px solid #1f2937",
+          color: "#10b981",
+          fontWeight: 900,
+          fontSize: "14px",
+          fontFamily: "monospace",
         }}
       >
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img
-          src="http://localhost:3000/logo.png"
-          width={32}
-          height={32}
-          alt="BuildFest logo"
-          style={{ objectFit: "cover", width: "100%", height: "100%" }}
-        />
+        BF
       </div>
     ),
     { ...size },

@@ -34,7 +34,7 @@ export const partnerDirectory: Partner[] = [
     name: "CASET College",
     tier: "Community",
     description: "Hosts HACKDAYS Srinagar on campus every year, including overnight space.",
-    url: "https://buildfestkashmir.org",
+    url: "https://buildfestkashmir.xyz",
   },
   {
     name: "MASTRA AI",
@@ -46,7 +46,7 @@ export const partnerDirectory: Partner[] = [
     name: "Kashmir University",
     tier: "Community",
     description: "Hosted BuildFest Demo Day 2026 in their Convocation Hall.",
-    url: "https://buildfestkashmir.org",
+    url: "https://buildfestkashmir.xyz",
   },
   {
     name: "WEBRYX.IN",
