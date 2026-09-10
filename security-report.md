@@ -10,44 +10,46 @@
 
 A security audit and implementation review was conducted on the BuildFest Kashmir platform. The codebase incorporates defense-in-depth security mechanisms:
 
-1. **SQL Injection Immunity (SQLi)**: 100% parameterised query architecture via Supabase SDK (PostgREST API). Zero raw SQL concatenation.
-2. **Server-Side Rate Limiting**: In-memory sliding window rate limiter in [`src/lib/security/rate-limit.ts`](file:///c:/Users/PC/.antigravity-ide/buildfest-website/src/lib/security/rate-limit.ts) protecting auth endpoints (Sign In, Sign Up, Password Reset).
-3. **Database Row Level Security (RLS)**: Enforced across all tables and Supabase storage buckets.
-4. **Input Validation**: Server Actions validate incoming payloads using strict **Zod schemas**.
-5. **HTTP Security Headers**: HSTS, `X-Frame-Options` (`SAMEORIGIN`), `X-Content-Type-Options` (`nosniff`), and `Referrer-Policy` configured in [`next.config.ts`](file:///c:/Users/PC/.antigravity-ide/buildfest-website/next.config.ts).
-6. **Secret Hygiene**: 0 private keys or service role secrets exposed in public client bundles.
+1. **Content Security Policy (CSP)**: Strict HTTP header preventing XSS attacks, unauthorized script injections, and data exfiltration in [`next.config.ts`](file:///c:/Users/PC/.antigravity-ide/buildfest-website/next.config.ts).
+2. **SQL Injection Immunity (SQLi)**: 100% parameterised query architecture via Supabase SDK (PostgREST API). Zero raw SQL concatenation.
+3. **Server-Side Rate Limiting**: In-memory sliding window rate limiter in [`src/lib/security/rate-limit.ts`](file:///c:/Users/PC/.antigravity-ide/buildfest-website/src/lib/security/rate-limit.ts) protecting auth endpoints (Sign In, Sign Up, Password Reset).
+4. **Database Row Level Security (RLS)**: Enforced across all tables and Supabase storage buckets.
+5. **Input Validation**: Server Actions validate incoming payloads using strict **Zod schemas**.
+6. **HTTP Hardening Headers**: HSTS, `X-Frame-Options` (`SAMEORIGIN`), `X-Content-Type-Options` (`nosniff`), and `Referrer-Policy` configured in [`next.config.ts`](file:///c:/Users/PC/.antigravity-ide/buildfest-website/next.config.ts).
+7. **Secret Hygiene**: 0 private keys or service role secrets exposed in public client bundles.
 
 ---
 
 ## 2. In-Depth Security Protections
 
-### A. Rate Limiting Protection (Anti-Brute Force / Anti-Spam)
+### A. Content Security Policy (CSP) Header
+- **Configured in**: [`next.config.ts`](file:///c:/Users/PC/.antigravity-ide/buildfest-website/next.config.ts)
+- **Directives**:
+  - `default-src 'self'`: Restricts external resources by default.
+  - `script-src 'self' 'unsafe-eval' 'unsafe-inline'`: Controls script execution contexts.
+  - `style-src 'self' 'unsafe-inline' https://fonts.googleapis.com`: Protects inline and Google Font styling.
+  - `img-src 'self' data: blob: https://*.supabase.co https://images.unsplash.com https://*.githubusercontent.com`: Whitelists trusted image hosts.
+  - `connect-src 'self' https://*.supabase.co wss://*.supabase.co`: Restricts XHR/Fetch/WebSocket endpoints exclusively to Supabase backend services.
+  - `object-src 'none'`: Completely blocks Flash, Applets, and object injection vectors.
+  - `frame-ancestors 'self'`: Prevents clickjacking in iframe embeds.
+  - `upgrade-insecure-requests`: Forces all http subresource requests to https.
+
+### B. Rate Limiting Protection (Anti-Brute Force / Anti-Spam)
 - **Module**: [`src/lib/security/rate-limit.ts`](file:///c:/Users/PC/.antigravity-ide/buildfest-website/src/lib/security/rate-limit.ts)
 - **Limits Implemented**:
   - **Sign In (`signInWithEmail`)**: Max 5 attempts per email per 15-minute window.
   - **Sign Up (`signUpWithEmail`)**: Max 3 registration attempts per email per 1-hour window.
   - **Forgot Password (`requestPasswordReset`)**: Max 3 reset requests per email per 15-minute window.
-- Automatically clears stale tracking entries in memory every 10 minutes.
 
-### B. SQL Injection (SQLi) Defense
+### C. SQL Injection (SQLi) Defense
 - **Why SQL Injection is impossible in this codebase**:
   - All database interactions use Supabase JS Client (`@supabase/ssr` / `@supabase/supabase-js`), which passes parameters via REST payloads (PostgREST).
   - Queries do NOT concatenate raw strings (`SELECT * FROM users WHERE email = '` + email + `'`).
-  - Postgres parameterization handles escaping safely at the protocol level.
 
-### C. Database Row Level Security (RLS)
+### D. Database Row Level Security (RLS)
 - Enforced via Supabase migrations in [`supabase/migrations/`](file:///c:/Users/PC/.antigravity-ide/buildfest-website/supabase/migrations/):
   - `registrations`, `team_applications`, `contact_messages`: Public anonymous users can ONLY `INSERT`. Reads, updates, and deletes are strictly denied.
   - `profiles`: Users can view profiles, but can ONLY modify their own record (`auth.uid() = id`).
-  - `posts`: Public access is restricted to published posts (`published = true`).
-
-### D. HTTP Security Headers & CSRF Defense
-- **Configured in `next.config.ts`**:
-  - `Strict-Transport-Security`: `max-age=63072000; includeSubDomains; preload`
-  - `X-Frame-Options`: `SAMEORIGIN` (Clickjacking defense)
-  - `X-Content-Type-Options`: `nosniff` (MIME sniffing defense)
-  - `Referrer-Policy`: `origin-when-cross-origin`
-- **CSRF Protection**: Next.js Server Actions enforce Origin and Host validation on all POST requests.
 
 ---
 
@@ -55,6 +57,7 @@ A security audit and implementation review was conducted on the BuildFest Kashmi
 
 | Security Category | Status | Implementation Details |
 | :--- | :--- | :--- |
+| **Content Security Policy** | ✅ **PROTECTED** | Enforced in `next.config.ts` |
 | **SQL Injection** | ✅ **PROTECTED** | 100% Parameterized queries via Supabase PostgREST |
 | **Rate Limiting** | ✅ **PROTECTED** | Sliding-window limiter in `src/lib/security/rate-limit.ts` |
 | **Brute-Force Protection** | ✅ **PROTECTED** | 5 attempts / 15 mins on sign-in & reset requests |

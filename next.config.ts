@@ -1,5 +1,20 @@
 import type { NextConfig } from "next";
 
+const cspHeader = `
+  default-src 'self';
+  script-src 'self' 'unsafe-eval' 'unsafe-inline';
+  style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;
+  img-src 'self' data: blob: https://*.supabase.co https://images.unsplash.com https://*.githubusercontent.com https://avatar.vercel.sh;
+  font-src 'self' https://fonts.gstatic.com data:;
+  connect-src 'self' https://*.supabase.co wss://*.supabase.co;
+  frame-src 'self' https://youtube.com https://www.youtube.com https://discord.com;
+  object-src 'none';
+  base-uri 'self';
+  form-action 'self';
+  frame-ancestors 'self';
+  upgrade-insecure-requests;
+`.replace(/\s{2,}/g, " ").trim();
+
 const nextConfig: NextConfig = {
   images: {
     remotePatterns: [
@@ -15,6 +30,10 @@ const nextConfig: NextConfig = {
       {
         source: "/:path*",
         headers: [
+          {
+            key: "Content-Security-Policy",
+            value: cspHeader,
+          },
           {
             key: "X-DNS-Prefetch-Control",
             value: "on",
