@@ -9,4 +9,4 @@ Disallow: /reset-password
 Disallow: /profile
 Disallow: /api/
 
-Sitemap: https://buildfestkashmir.xyz/sitemap.xml
+Sitemap: https://www.buildfestkashmir.xyz/sitemap.xml
