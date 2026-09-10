@@ -52,7 +52,7 @@ export default async function EventDetailPage({ params }: EventPageProps) {
         description={event.description}
         startDate={event.startDate}
         endDate={event.endDate || event.startDate}
-        locationName={event.location || siteConfig.location}
+        locationName={event.venue || event.city || siteConfig.location}
         url={`${siteConfig.url}/events/${event.slug}`}
       />
       <SiteHeader />
