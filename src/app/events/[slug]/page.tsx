@@ -12,6 +12,9 @@ import { Gallery } from "@/components/sections/events/detail/gallery";
 import { RegistrationCta } from "@/components/sections/events/detail/registration-cta";
 import { events, getEventBySlug } from "@/lib/constants/events";
 
+import { EventJsonLd } from "@/components/shared/json-ld";
+import { siteConfig } from "@/lib/constants/site";
+
 interface EventPageProps {
   params: Promise<{ slug: string }>;
 }
@@ -44,6 +47,14 @@ export default async function EventDetailPage({ params }: EventPageProps) {
 
   return (
     <>
+      <EventJsonLd
+        name={event.name}
+        description={event.description}
+        startDate={event.startDate}
+        endDate={event.endDate || event.startDate}
+        locationName={event.location || siteConfig.location}
+        url={`${siteConfig.url}/events/${event.slug}`}
+      />
       <SiteHeader />
       <main>
         <DetailHero event={event} />

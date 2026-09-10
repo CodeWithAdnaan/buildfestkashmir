@@ -5,6 +5,7 @@ import { AuthProvider } from "@/components/providers/auth-provider";
 import { AmbientBackground } from "@/components/shared/ambient-background";
 import { siteConfig } from "@/lib/constants/site";
 import { createClient } from "@/lib/supabase/server";
+import { OrganizationJsonLd, WebSiteJsonLd } from "@/components/shared/json-ld";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -20,8 +21,20 @@ export const metadata: Metadata = {
     "Kashmir developer community",
     "student hackathon India",
     "HACKDAYS SRINAGAR",
+    "Kashmir tech community",
+    "Open source Kashmir",
   ],
   authors: [{ name: siteConfig.name }],
+  creator: siteConfig.name,
+  publisher: siteConfig.name,
+  formatDetection: {
+    email: false,
+    address: false,
+    telephone: false,
+  },
+  alternates: {
+    canonical: siteConfig.url,
+  },
   openGraph: {
     type: "website",
     locale: "en_IN",
@@ -34,6 +47,17 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: `${siteConfig.name} — ${siteConfig.tagline}`,
     description: siteConfig.description,
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-video-preview": -1,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+    },
   },
 };
 
@@ -57,6 +81,10 @@ export default async function RootLayout({
 
   return (
     <html lang="en" className={fontVariables}>
+      <head>
+        <OrganizationJsonLd />
+        <WebSiteJsonLd />
+      </head>
       <body className="bg-canvas font-sans text-ink antialiased">
         <AmbientBackground />
         <AuthProvider initialUser={user}>
