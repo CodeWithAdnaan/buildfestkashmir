@@ -19,10 +19,58 @@
     <priority>0.9</priority>
   </url>
   <url>
+    <loc>https://www.buildfestkashmir.xyz/events/hackdays-srinagar-2026</loc>
+    <lastmod>2026-09-10</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.buildfestkashmir.xyz/events/promptwars-x-hackdays-srinagar-v2</loc>
+    <lastmod>2026-09-10</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
     <loc>https://www.buildfestkashmir.xyz/blog</loc>
     <lastmod>2026-09-10</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://www.buildfestkashmir.xyz/blog/the-3am-edge-building-in-kashmir</loc>
+    <lastmod>2026-09-10</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://www.buildfestkashmir.xyz/blog/stop-building-wrappers-death-of-engineering</loc>
+    <lastmod>2026-09-10</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://www.buildfestkashmir.xyz/blog/how-to-learn-anything-in-72-hours</loc>
+    <lastmod>2026-09-10</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://www.buildfestkashmir.xyz/blog/architecture-of-resistance-offline-first</loc>
+    <lastmod>2026-09-10</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://www.buildfestkashmir.xyz/blog/zero-to-one-pull-request-open-source</loc>
+    <lastmod>2026-09-10</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://www.buildfestkashmir.xyz/blog/kashedu-hackathon-to-production-product</loc>
+    <lastmod>2026-09-10</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
   </url>
   <url>
     <loc>https://www.buildfestkashmir.xyz/gallery</loc>
