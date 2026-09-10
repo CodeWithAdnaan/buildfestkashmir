@@ -15,7 +15,7 @@ A security audit and implementation review was conducted on the BuildFest Kashmi
 3. **Server-Side Rate Limiting**: In-memory sliding window rate limiter in [`src/lib/security/rate-limit.ts`](file:///c:/Users/PC/.antigravity-ide/buildfest-website/src/lib/security/rate-limit.ts) protecting auth endpoints (Sign In, Sign Up, Password Reset).
 4. **Database Row Level Security (RLS)**: Enforced across all tables and Supabase storage buckets.
 5. **Input Validation**: Server Actions validate incoming payloads using strict **Zod schemas**.
-6. **HTTP Hardening Headers**: HSTS, `X-Frame-Options` (`SAMEORIGIN`), `X-Content-Type-Options` (`nosniff`), and `Referrer-Policy` configured in [`next.config.ts`](file:///c:/Users/PC/.antigravity-ide/buildfest-website/next.config.ts).
+6. **HTTP Hardening Headers**: HSTS, `X-Frame-Options` (`SAMEORIGIN`), `X-Content-Type-Options` (`nosniff`), `Permissions-Policy`, and `Referrer-Policy` configured in [`next.config.ts`](file:///c:/Users/PC/.antigravity-ide/buildfest-website/next.config.ts) and [`middleware.ts`](file:///c:/Users/PC/.antigravity-ide/buildfest-website/middleware.ts).
 7. **Secret Hygiene**: 0 private keys or service role secrets exposed in public client bundles.
 
 ---
@@ -63,7 +63,7 @@ A security audit and implementation review was conducted on the BuildFest Kashmi
 | **Brute-Force Protection** | ✅ **PROTECTED** | 5 attempts / 15 mins on sign-in & reset requests |
 | **Database RLS** | ✅ **PROTECTED** | Strict policies on all 5 tables + 3 storage buckets |
 | **Input Validation** | ✅ **PROTECTED** | Zod schemas on all server actions |
-| **HTTP Hardening Headers** | ✅ **PROTECTED** | HSTS, Frameguard, & Nosniff in `next.config.ts` |
+| **HTTP Hardening Headers** | ✅ **PROTECTED** | HSTS, Frameguard, Nosniff, & Permissions-Policy in `next.config.ts` and `middleware.ts` |
 | **Secret Hygiene** | ✅ **PROTECTED** | Zero private credentials exposed |
 
 **Final Status**: The platform meets standard application security requirements and is **SECURE FOR PRODUCTION DEPLOYMENT**.

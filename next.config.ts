@@ -35,6 +35,11 @@ const nextConfig: NextConfig = {
             value: cspHeader,
           },
           {
+            key: "Permissions-Policy",
+            value:
+              "camera=(), microphone=(), geolocation=(), browsing-topics=(), payment=(), usb=(), display-capture=(), accelerometer=(), gyroscope=(), magnetometer=(), midi=(), picture-in-picture=(), publickey-credentials-get=(), screen-wake-lock=()",
+          },
+          {
             key: "X-DNS-Prefetch-Control",
             value: "on",
           },

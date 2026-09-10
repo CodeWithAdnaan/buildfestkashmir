@@ -1,6 +1,23 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { createServerClient } from "@supabase/ssr";
 
+const securityHeaders: Record<string, string> = {
+  "Permissions-Policy":
+    "camera=(), microphone=(), geolocation=(), browsing-topics=(), payment=(), usb=(), display-capture=(), accelerometer=(), gyroscope=(), magnetometer=(), midi=(), picture-in-picture=(), publickey-credentials-get=(), screen-wake-lock=()",
+  "X-DNS-Prefetch-Control": "on",
+  "Strict-Transport-Security": "max-age=63072000; includeSubDomains; preload",
+  "X-Frame-Options": "SAMEORIGIN",
+  "X-Content-Type-Options": "nosniff",
+  "Referrer-Policy": "origin-when-cross-origin",
+};
+
+function applySecurityHeaders(res: NextResponse) {
+  Object.entries(securityHeaders).forEach(([key, value]) => {
+    res.headers.set(key, value);
+  });
+  return res;
+}
+
 /**
  * Refreshes the Supabase auth session cookie on every request that isn't a
  * static asset. Nothing in this app uses Supabase Auth yet — every current
@@ -10,6 +27,8 @@ import { createServerClient } from "@supabase/ssr";
  */
 export async function middleware(request: NextRequest) {
   let response = NextResponse.next({ request });
+
+  applySecurityHeaders(response);
 
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
   const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
@@ -28,6 +47,7 @@ export async function middleware(request: NextRequest) {
       setAll(cookiesToSet) {
         cookiesToSet.forEach(({ name, value }) => request.cookies.set(name, value));
         response = NextResponse.next({ request });
+        applySecurityHeaders(response);
         cookiesToSet.forEach(({ name, value, options }) =>
           response.cookies.set(name, value, options),
         );
