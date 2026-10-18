@@ -20,7 +20,11 @@ export function RegistrationCta({ event }: { event: BuildFestEvent }) {
               Registration takes under five minutes. Solo or with a team — both are welcome.
             </p>
             <Button asChild size="lg" className="mt-7">
-              <Link href={`/events/${event.slug}/register`}>
+              <Link
+                href={event.registrationUrl || `/events/${event.slug}/register`}
+                target={event.registrationUrl?.startsWith("http") ? "_blank" : undefined}
+                rel={event.registrationUrl?.startsWith("http") ? "noopener noreferrer" : undefined}
+              >
                 Register now <ArrowUpRight className="h-4 w-4" />
               </Link>
             </Button>

@@ -57,4 +57,5 @@ export interface BuildFestEvent {
   dateLabel?: string;
   venueLabel?: string;
   bannerImage?: string;
+  registrationUrl?: string;
 }

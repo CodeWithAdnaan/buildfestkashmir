@@ -53,7 +53,11 @@ export function Hero({ featuredEvent }: HeroProps = {}) {
           <motion.div variants={fadeUp} className="mt-9 flex flex-wrap items-center justify-center gap-3">
             {activeFeatured && !activeFeatured.isTentative ? (
               <Button asChild size="lg">
-                <Link href={`/events/${activeFeatured.slug}/register`}>
+                <Link
+                  href={activeFeatured.registrationUrl || `/events/${activeFeatured.slug}/register`}
+                  target={activeFeatured.registrationUrl?.startsWith("http") ? "_blank" : undefined}
+                  rel={activeFeatured.registrationUrl?.startsWith("http") ? "noopener noreferrer" : undefined}
+                >
                   Register for {activeFeatured.name.replace(" 2026", "")} <ArrowRight className="h-4 w-4" />
                 </Link>
               </Button>

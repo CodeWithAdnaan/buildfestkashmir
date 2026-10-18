@@ -5,7 +5,19 @@ import type { Database } from "@/lib/supabase/types";
 
 type EventRow = Database["public"]["Tables"]["events"]["Row"];
 
-export function mapRowToEvent(row: EventRow): BuildFestEvent {
+export function mapRowToEvent(row: any): BuildFestEvent {
+  // Check direct column or embedded theme fallback
+  let registrationUrl = row.registration_url;
+  const rawThemes: string[] = Array.isArray(row.themes) ? row.themes : [];
+  if (!registrationUrl) {
+    const regTheme = rawThemes.find((t) => typeof t === "string" && t.startsWith("reg_url:"));
+    if (regTheme) {
+      registrationUrl = regTheme.replace("reg_url:", "");
+    }
+  }
+
+  const cleanThemes = rawThemes.filter((t) => typeof t === "string" && !t.startsWith("reg_url:"));
+
   return {
     slug: row.slug,
     name: row.name,
@@ -20,7 +32,7 @@ export function mapRowToEvent(row: EventRow): BuildFestEvent {
     prizePool: row.prize_pool,
     teamSize: row.team_size,
     registrationOpen: row.registration_open,
-    themes: row.themes || [],
+    themes: cleanThemes,
     schedule: Array.isArray(row.schedule) ? row.schedule : [],
     speakers: Array.isArray(row.speakers) ? row.speakers : [],
     mentors: Array.isArray(row.mentors) ? row.mentors : [],
@@ -33,6 +45,7 @@ export function mapRowToEvent(row: EventRow): BuildFestEvent {
     dateLabel: row.date_label ?? undefined,
     venueLabel: row.venue_label ?? undefined,
     bannerImage: row.banner_image ?? undefined,
+    registrationUrl: registrationUrl || undefined,
   };
 }
 

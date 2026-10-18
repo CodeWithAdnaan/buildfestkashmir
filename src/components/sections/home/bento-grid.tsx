@@ -76,6 +76,19 @@ function FeaturedEventCard({ event }: { event?: BuildFestEvent }) {
         )}
       </div>
 
+      {/* Event Banner Image */}
+      {activeEvent.bannerImage && (
+        <div className="relative mb-5 aspect-[21/9] sm:aspect-[2.4/1] w-full overflow-hidden rounded-xl border border-border/80 shadow-md">
+          <Image
+            src={activeEvent.bannerImage}
+            alt={activeEvent.name}
+            fill
+            className="object-cover"
+            unoptimized={activeEvent.bannerImage.startsWith("data:") || activeEvent.bannerImage.startsWith("blob:")}
+          />
+        </div>
+      )}
+
       <h3 className="text-2xl font-semibold tracking-tight sm:text-3xl">{activeEvent.name}</h3>
       <p className="mt-3 max-w-[52ch] text-[15px] leading-relaxed text-ink-muted">
         {activeEvent.description}
@@ -88,19 +101,35 @@ function FeaturedEventCard({ event }: { event?: BuildFestEvent }) {
         <Meta label="TEAM SIZE" value={activeEvent.teamSize} />
       </div>
 
-      {isTentative ? (
-        <Button asChild variant="ghost" className="mt-6 w-fit border-border hover:bg-canvas-raised">
-          <Link href={`/events/${activeEvent.slug}`}>
-            View Event Details <ArrowUpRight className="h-4 w-4" />
-          </Link>
-        </Button>
-      ) : (
-        <Button asChild className="mt-6 w-fit">
-          <Link href={`/events/${activeEvent.slug}/register`}>
-            Register your team <ArrowUpRight className="h-4 w-4" />
-          </Link>
-        </Button>
-      )}
+      <div className="mt-6 flex flex-wrap items-center gap-3">
+        {isTentative ? (
+          <Button asChild variant="ghost" className="border-border hover:bg-canvas-raised">
+            <Link href={`/events/${activeEvent.slug}`}>
+              Know More <ArrowUpRight className="h-4 w-4" />
+            </Link>
+          </Button>
+        ) : (
+          <>
+            {activeEvent.registrationOpen && (
+              <Button asChild className="bg-saffron text-black hover:bg-saffron/90 font-medium">
+                <Link
+                  href={activeEvent.registrationUrl || `/events/${activeEvent.slug}/register`}
+                  target={activeEvent.registrationUrl?.startsWith("http") ? "_blank" : undefined}
+                  rel={activeEvent.registrationUrl?.startsWith("http") ? "noopener noreferrer" : undefined}
+                >
+                  Register Now <ArrowUpRight className="h-4 w-4" />
+                </Link>
+              </Button>
+            )}
+
+            <Button asChild variant="ghost" className="border border-border/80 text-ink hover:bg-canvas-raised">
+              <Link href={`/events/${activeEvent.slug}`}>
+                Know More <ArrowUpRight className="h-4 w-4" />
+              </Link>
+            </Button>
+          </>
+        )}
+      </div>
     </BentoCard>
   );
 }

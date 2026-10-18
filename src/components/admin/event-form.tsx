@@ -162,6 +162,22 @@ export function EventForm({ initialEvent }: EventFormProps) {
               <option value="false">Closed</option>
             </select>
           </div>
+
+          <div className="md:col-span-2">
+            <label className="block text-xs font-mono text-ink-muted mb-1.5">
+              Custom Registration Link / URL (Optional)
+            </label>
+            <input
+              type="text"
+              name="registrationUrl"
+              defaultValue={initialEvent?.registrationUrl || ""}
+              placeholder="e.g. https://mlh.io/... or https://devpost.com/... (Leave empty for default /register page)"
+              className="w-full rounded-xl border border-border bg-canvas px-3.5 py-2.5 text-sm font-mono text-ink placeholder:text-ink-faint focus:border-saffron focus:outline-none"
+            />
+            <p className="mt-1.5 text-[11px] font-mono text-ink-faint">
+              Agar registration MLH, Devpost, Luma ya kisi specific page par karwani hai, to link yahan daalein. Empty chhodne par website ka internal form use hoga.
+            </p>
+          </div>
         </div>
       </div>
 
