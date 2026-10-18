@@ -10,22 +10,25 @@ import { Sponsors } from "@/components/sections/events/detail/sponsors";
 import { Prizes } from "@/components/sections/events/detail/prizes";
 import { Gallery } from "@/components/sections/events/detail/gallery";
 import { RegistrationCta } from "@/components/sections/events/detail/registration-cta";
-import { events, getEventBySlug } from "@/lib/constants/events";
+import { getEvent, getEvents } from "@/lib/data/events";
 
 import { EventJsonLd } from "@/components/shared/json-ld";
 import { siteConfig } from "@/lib/constants/site";
+
+export const revalidate = 0;
 
 interface EventPageProps {
   params: Promise<{ slug: string }>;
 }
 
-export function generateStaticParams() {
-  return events.map((event) => ({ slug: event.slug }));
+export async function generateStaticParams() {
+  const allEvents = await getEvents();
+  return allEvents.map((event) => ({ slug: event.slug }));
 }
 
 export async function generateMetadata({ params }: EventPageProps): Promise<Metadata> {
   const { slug } = await params;
-  const event = getEventBySlug(slug);
+  const event = await getEvent(slug);
   if (!event) return {};
 
   return {
@@ -41,7 +44,7 @@ export async function generateMetadata({ params }: EventPageProps): Promise<Meta
 
 export default async function EventDetailPage({ params }: EventPageProps) {
   const { slug } = await params;
-  const event = getEventBySlug(slug);
+  const event = await getEvent(slug);
 
   if (!event) notFound();
 

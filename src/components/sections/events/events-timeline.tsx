@@ -2,10 +2,16 @@ import { PillBadge } from "@/components/shared/pill-badge";
 import { Reveal } from "@/components/shared/reveal";
 import { EventCard } from "@/components/sections/events/event-card";
 import { getUpcomingEvents, getPastEvents } from "@/lib/constants/events";
+import type { BuildFestEvent } from "@/types/event";
 
-export function EventsTimeline() {
-  const upcoming = getUpcomingEvents();
-  const past = getPastEvents();
+interface EventsTimelineProps {
+  upcoming?: BuildFestEvent[];
+  past?: BuildFestEvent[];
+}
+
+export function EventsTimeline({ upcoming, past }: EventsTimelineProps) {
+  const upcomingList = upcoming ?? getUpcomingEvents();
+  const pastList = past ?? getPastEvents();
 
   return (
     <section className="py-10 sm:py-16">
@@ -19,7 +25,7 @@ export function EventsTimeline() {
           </h2>
         </Reveal>
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {upcoming.map((event) => (
+          {upcomingList.map((event) => (
             <Reveal key={event.slug}>
               <EventCard event={event} />
             </Reveal>
@@ -35,7 +41,7 @@ export function EventsTimeline() {
           </h2>
         </Reveal>
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {past.map((event) => (
+          {pastList.map((event) => (
             <Reveal key={event.slug}>
               <EventCard event={event} />
             </Reveal>

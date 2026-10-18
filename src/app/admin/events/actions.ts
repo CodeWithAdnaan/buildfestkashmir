@@ -4,24 +4,56 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { requireAdminOrOrganizer } from "@/lib/auth/admin";
+import { events as staticEvents } from "@/lib/constants/events";
 
 export async function toggleRegistrationAction(slug: string, currentStatus: boolean) {
   await requireAdminOrOrganizer();
   const supabase = await createClient();
 
-  const { error } = await supabase
+  const { data, error } = await supabase
     .from("events")
     .update({ registration_open: !currentStatus, updated_at: new Date().toISOString() })
-    .eq("slug", slug);
+    .eq("slug", slug)
+    .select();
 
   if (error) {
     throw new Error(error.message);
   }
 
+  // If event didn't exist in Supabase yet (loaded from static fallback), seed it now
+  if (!data || data.length === 0) {
+    const staticEvt = staticEvents.find((e) => e.slug === slug);
+    if (staticEvt) {
+      await supabase.from("events").insert([
+        {
+          slug: staticEvt.slug,
+          name: staticEvt.name,
+          tagline: staticEvt.tagline,
+          status: staticEvt.status,
+          description: staticEvt.description,
+          overview: staticEvt.overview,
+          venue: staticEvt.venue,
+          city: staticEvt.city,
+          start_date: staticEvt.startDate,
+          end_date: staticEvt.endDate,
+          prize_pool: staticEvt.prizePool,
+          team_size: staticEvt.teamSize,
+          registration_open: !currentStatus,
+          themes: staticEvt.themes,
+          banner_image: staticEvt.bannerImage || null,
+          updated_at: new Date().toISOString(),
+        },
+      ]);
+    }
+  }
+
   revalidatePath("/admin");
   revalidatePath("/admin/events");
+  revalidatePath(`/admin/events/${slug}`);
   revalidatePath(`/events/${slug}`);
+  revalidatePath(`/events/${slug}/register`);
   revalidatePath("/events");
+  revalidatePath("/");
 }
 
 export async function deleteEventAction(slug: string) {
@@ -34,8 +66,11 @@ export async function deleteEventAction(slug: string) {
     throw new Error(error.message);
   }
 
+  revalidatePath("/admin");
   revalidatePath("/admin/events");
+  revalidatePath(`/events/${slug}`);
   revalidatePath("/events");
+  revalidatePath("/");
   redirect("/admin/events");
 }
 
@@ -90,13 +125,23 @@ export async function saveEventAction(prevState: any, formData: FormData) {
 
   if (originalSlug) {
     // Update existing event
-    const { error } = await supabase
+    const { data, error } = await supabase
       .from("events")
       .update(payload)
-      .eq("slug", originalSlug);
+      .eq("slug", originalSlug)
+      .select();
 
     if (error) {
       return { error: error.message };
+    }
+
+    // If the event was loaded from static fallback and wasn't in DB yet,
+    // update() matches 0 rows. Insert it now so updates are persistently saved!
+    if (!data || data.length === 0) {
+      const { error: insertError } = await supabase.from("events").insert([payload]);
+      if (insertError) {
+        return { error: insertError.message };
+      }
     }
   } else {
     // Create new event
@@ -107,9 +152,16 @@ export async function saveEventAction(prevState: any, formData: FormData) {
     }
   }
 
+  revalidatePath("/admin");
   revalidatePath("/admin/events");
-  revalidatePath(`/events/${slug}`);
+  revalidatePath(`/admin/events/${slug}`);
+  if (originalSlug && originalSlug !== slug) {
+    revalidatePath(`/admin/events/${originalSlug}`);
+    revalidatePath(`/events/${originalSlug}`);
+  }
   revalidatePath("/events");
+  revalidatePath(`/events/${slug}`);
+  revalidatePath(`/events/${slug}/register`);
   revalidatePath("/");
   redirect("/admin/events");
 }

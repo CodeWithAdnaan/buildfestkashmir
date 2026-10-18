@@ -6,6 +6,7 @@ import { ArrowLeft, Save, Trash2, Loader2, AlertCircle } from "lucide-react";
 import type { BuildFestEvent } from "@/types/event";
 import { saveEventAction, deleteEventAction } from "@/app/admin/events/actions";
 import { Button } from "@/components/ui/button";
+import { EventBannerPicker } from "@/components/admin/event-banner-picker";
 
 interface EventFormProps {
   initialEvent?: BuildFestEvent;
@@ -280,16 +281,7 @@ export function EventForm({ initialEvent }: EventFormProps) {
           </div>
 
           <div className="md:col-span-2">
-            <label className="block text-xs font-mono text-ink-muted mb-1.5">
-              Banner Image URL
-            </label>
-            <input
-              type="text"
-              name="bannerImage"
-              defaultValue={initialEvent?.bannerImage || ""}
-              placeholder="/events/promptwars-hackdays-v2-banner.png or https://..."
-              className="w-full rounded-xl border border-border bg-canvas px-3.5 py-2.5 text-sm font-mono text-ink placeholder:text-ink-faint focus:border-saffron focus:outline-none"
-            />
+            <EventBannerPicker initialValue={initialEvent?.bannerImage || ""} />
           </div>
         </div>
       </div>

@@ -37,7 +37,7 @@ export function mapRowToEvent(row: EventRow): BuildFestEvent {
 }
 
 /**
- * Fetch all events, prioritizing Supabase table and falling back to static constants
+ * Fetch all events, prioritizing Supabase table and merging with static fallback
  */
 export async function getEvents(): Promise<BuildFestEvent[]> {
   try {
@@ -47,8 +47,11 @@ export async function getEvents(): Promise<BuildFestEvent[]> {
       .select("*")
       .order("start_date", { ascending: false });
 
-    if (!error && data && data.length > 0) {
-      return data.map(mapRowToEvent);
+    if (!error && data) {
+      const dbEvents = data.map(mapRowToEvent);
+      const dbSlugs = new Set(dbEvents.map((e) => e.slug));
+      const remainingStatic = staticEvents.filter((e) => !dbSlugs.has(e.slug));
+      return [...dbEvents, ...remainingStatic];
     }
   } catch {
     // Fallback if Supabase is offline or not configured
@@ -77,4 +80,34 @@ export async function getEvent(slug: string): Promise<BuildFestEvent | undefined
   }
 
   return staticEvents.find((e) => e.slug === slug);
+}
+
+/**
+ * Fetch upcoming events sorted chronologically
+ */
+export async function getUpcomingEvents(): Promise<BuildFestEvent[]> {
+  const all = await getEvents();
+  return all
+    .filter((e) => e.status === "upcoming")
+    .sort((a, b) => new Date(a.startDate).getTime() - new Date(b.startDate).getTime());
+}
+
+/**
+ * Fetch past events sorted newest first
+ */
+export async function getPastEvents(): Promise<BuildFestEvent[]> {
+  const all = await getEvents();
+  return all
+    .filter((e) => e.status === "past")
+    .sort((a, b) => new Date(b.startDate).getTime() - new Date(a.startDate).getTime());
+}
+
+/**
+ * Fetch featured upcoming event
+ */
+export async function getFeaturedEvent(): Promise<BuildFestEvent | undefined> {
+  const upcoming = await getUpcomingEvents();
+  if (upcoming.length > 0) return upcoming[0];
+  const all = await getEvents();
+  return all[0];
 }

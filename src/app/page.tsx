@@ -5,6 +5,9 @@ import { Hero } from "@/components/sections/home/hero";
 import { BentoGrid } from "@/components/sections/home/bento-grid";
 import { Faq } from "@/components/sections/home/faq";
 import { siteConfig } from "@/lib/constants/site";
+import { getFeaturedEvent } from "@/lib/data/events";
+
+export const revalidate = 0;
 
 export const metadata: Metadata = {
   title: `${siteConfig.name} — ${siteConfig.tagline}`,
@@ -12,13 +15,15 @@ export const metadata: Metadata = {
   alternates: { canonical: "/" },
 };
 
-export default function HomePage() {
+export default async function HomePage() {
+  const featuredEvent = await getFeaturedEvent();
+
   return (
     <>
       <SiteHeader />
       <main>
-        <Hero />
-        <BentoGrid />
+        <Hero featuredEvent={featuredEvent} />
+        <BentoGrid featuredEvent={featuredEvent} />
         <Faq />
       </main>
       <SiteFooter />

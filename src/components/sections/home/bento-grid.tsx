@@ -10,8 +10,9 @@ import { ChinarLeaf } from "@/components/shared/chinar-leaf";
 import { Button } from "@/components/ui/button";
 import { useCountdown } from "@/hooks/use-countdown";
 import { formatDateRange } from "@/lib/utils";
-import { featuredEvent } from "@/lib/constants/events";
+import { featuredEvent as staticFeaturedEvent } from "@/lib/constants/events";
 import { partners } from "@/lib/constants/partners";
+import type { BuildFestEvent } from "@/types/event";
 
 const countdownUnits = [
   { key: "days", label: "D" },
@@ -20,7 +21,11 @@ const countdownUnits = [
   { key: "seconds", label: "S" },
 ] as const;
 
-export function BentoGrid() {
+interface BentoGridProps {
+  featuredEvent?: BuildFestEvent;
+}
+
+export function BentoGrid({ featuredEvent }: BentoGridProps = {}) {
   return (
     <section className="relative py-10 sm:py-16">
       <div className="container-content">
@@ -36,7 +41,7 @@ export function BentoGrid() {
         </div>
 
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 lg:auto-rows-[minmax(200px,auto)]">
-          <FeaturedEventCard />
+          <FeaturedEventCard event={featuredEvent} />
           <WhyBuildFestCard />
           <GalleryCard />
           <OpenSourceCard />
@@ -48,14 +53,15 @@ export function BentoGrid() {
   );
 }
 
-function FeaturedEventCard() {
-  const countdown = useCountdown(featuredEvent.startDate);
-  const isTentative = !!featuredEvent.isTentative;
+function FeaturedEventCard({ event }: { event?: BuildFestEvent }) {
+  const activeEvent = event ?? staticFeaturedEvent;
+  const countdown = useCountdown(activeEvent.startDate);
+  const isTentative = !!activeEvent.isTentative;
 
   return (
     <BentoCard glow="saffron" className="sm:col-span-2 lg:col-span-2 lg:row-span-2">
       <div className="mb-5 flex items-center justify-between">
-        <PillBadge>{isTentative ? "COMING SOON" : featuredEvent.registrationOpen ? "REGISTRATION OPEN" : "UPCOMING"}</PillBadge>
+        <PillBadge>{isTentative ? "COMING SOON" : activeEvent.registrationOpen ? "REGISTRATION OPEN" : "UPCOMING"}</PillBadge>
         {isTentative ? (
           <span className="font-mono text-xs text-saffron tracking-widest">SEP 2026</span>
         ) : (
@@ -70,27 +76,27 @@ function FeaturedEventCard() {
         )}
       </div>
 
-      <h3 className="text-2xl font-semibold tracking-tight sm:text-3xl">{featuredEvent.name}</h3>
+      <h3 className="text-2xl font-semibold tracking-tight sm:text-3xl">{activeEvent.name}</h3>
       <p className="mt-3 max-w-[52ch] text-[15px] leading-relaxed text-ink-muted">
-        {featuredEvent.description}
+        {activeEvent.description}
       </p>
 
       <div className="mt-auto grid grid-cols-2 gap-x-6 gap-y-4 border-t border-border pt-6 sm:grid-cols-4">
-        <Meta label="VENUE" value={featuredEvent.venueLabel ?? featuredEvent.venue} />
-        <Meta label="DATE" value={featuredEvent.dateLabel ?? formatDateRange(featuredEvent.startDate, featuredEvent.endDate)} />
-        <Meta label="PRIZE POOL" value={featuredEvent.prizePool} />
-        <Meta label="TEAM SIZE" value={featuredEvent.teamSize} />
+        <Meta label="VENUE" value={activeEvent.venueLabel ?? activeEvent.venue} />
+        <Meta label="DATE" value={activeEvent.dateLabel ?? formatDateRange(activeEvent.startDate, activeEvent.endDate)} />
+        <Meta label="PRIZE POOL" value={activeEvent.prizePool} />
+        <Meta label="TEAM SIZE" value={activeEvent.teamSize} />
       </div>
 
       {isTentative ? (
         <Button asChild variant="ghost" className="mt-6 w-fit border-border hover:bg-canvas-raised">
-          <Link href={`/events/${featuredEvent.slug}`}>
+          <Link href={`/events/${activeEvent.slug}`}>
             View Event Details <ArrowUpRight className="h-4 w-4" />
           </Link>
         </Button>
       ) : (
         <Button asChild className="mt-6 w-fit">
-          <Link href={`/events/${featuredEvent.slug}/register`}>
+          <Link href={`/events/${activeEvent.slug}/register`}>
             Register your team <ArrowUpRight className="h-4 w-4" />
           </Link>
         </Button>

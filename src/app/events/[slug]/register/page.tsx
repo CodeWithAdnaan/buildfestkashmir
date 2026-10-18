@@ -5,19 +5,22 @@ import { SiteFooter } from "@/components/layout/site-footer";
 import { PillBadge } from "@/components/shared/pill-badge";
 import { Reveal } from "@/components/shared/reveal";
 import { RegistrationForm } from "@/components/sections/registration/registration-form";
-import { events, getEventBySlug } from "@/lib/constants/events";
+import { getEvent, getEvents } from "@/lib/data/events";
+
+export const revalidate = 0;
 
 interface RegisterPageProps {
   params: Promise<{ slug: string }>;
 }
 
-export function generateStaticParams() {
-  return events.map((event) => ({ slug: event.slug }));
+export async function generateStaticParams() {
+  const allEvents = await getEvents();
+  return allEvents.map((event) => ({ slug: event.slug }));
 }
 
 export async function generateMetadata({ params }: RegisterPageProps): Promise<Metadata> {
   const { slug } = await params;
-  const event = getEventBySlug(slug);
+  const event = await getEvent(slug);
   if (!event) return {};
   return {
     title: `Register — ${event.name}`,
@@ -28,7 +31,7 @@ export async function generateMetadata({ params }: RegisterPageProps): Promise<M
 
 export default async function RegisterPage({ params }: RegisterPageProps) {
   const { slug } = await params;
-  const event = getEventBySlug(slug);
+  const event = await getEvent(slug);
 
   if (!event || !event.registrationOpen) {
     redirect("/events");

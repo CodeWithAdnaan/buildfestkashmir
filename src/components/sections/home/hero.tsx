@@ -9,9 +9,16 @@ import { AnimatedCounter } from "@/components/shared/animated-counter";
 import { staggerContainer, fadeUp } from "@/lib/animations/variants";
 import { communityStats } from "@/lib/constants/stats";
 import { siteConfig } from "@/lib/constants/site";
-import { featuredEvent } from "@/lib/constants/events";
+import { featuredEvent as staticFeaturedEvent } from "@/lib/constants/events";
+import type { BuildFestEvent } from "@/types/event";
 
-export function Hero() {
+interface HeroProps {
+  featuredEvent?: BuildFestEvent;
+}
+
+export function Hero({ featuredEvent }: HeroProps = {}) {
+  const activeFeatured = featuredEvent ?? staticFeaturedEvent;
+
   return (
     <section className="relative overflow-hidden pb-20 pt-40 sm:pt-48">
       <div className="container-content">
@@ -44,10 +51,10 @@ export function Hero() {
           </motion.p>
 
           <motion.div variants={fadeUp} className="mt-9 flex flex-wrap items-center justify-center gap-3">
-            {featuredEvent && !featuredEvent.isTentative ? (
+            {activeFeatured && !activeFeatured.isTentative ? (
               <Button asChild size="lg">
-                <Link href={`/events/${featuredEvent.slug}/register`}>
-                  Register for {featuredEvent.name.replace(" 2026", "")} <ArrowRight className="h-4 w-4" />
+                <Link href={`/events/${activeFeatured.slug}/register`}>
+                  Register for {activeFeatured.name.replace(" 2026", "")} <ArrowRight className="h-4 w-4" />
                 </Link>
               </Button>
             ) : (
