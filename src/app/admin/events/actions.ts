@@ -116,6 +116,46 @@ export async function saveEventAction(prevState: any, formData: FormData) {
     themes.push(`reg_url:${registrationUrl}`);
   }
 
+  const dateLabel = formData.get("dateLabel")?.toString().trim() || null;
+  const venueLabel = formData.get("venueLabel")?.toString().trim() || null;
+  const isTentative = formData.get("isTentative") === "true";
+  const attendeesRaw = formData.get("attendees")?.toString().trim();
+  const attendees = attendeesRaw ? parseInt(attendeesRaw, 10) : null;
+  const projectsShippedRaw = formData.get("projectsShipped")?.toString().trim();
+  const projectsShipped = projectsShippedRaw ? parseInt(projectsShippedRaw, 10) : null;
+  const galleryTilesRaw = formData.get("galleryTiles")?.toString().trim();
+  const galleryTiles = galleryTilesRaw ? parseInt(galleryTilesRaw, 10) : 0;
+
+  let schedule = [];
+  try {
+    const raw = formData.get("schedule")?.toString();
+    if (raw) schedule = JSON.parse(raw);
+  } catch {}
+
+  let prizes = [];
+  try {
+    const raw = formData.get("prizes")?.toString();
+    if (raw) prizes = JSON.parse(raw);
+  } catch {}
+
+  let speakers = [];
+  try {
+    const raw = formData.get("speakers")?.toString();
+    if (raw) speakers = JSON.parse(raw);
+  } catch {}
+
+  let mentors = [];
+  try {
+    const raw = formData.get("mentors")?.toString();
+    if (raw) mentors = JSON.parse(raw);
+  } catch {}
+
+  let sponsors = [];
+  try {
+    const raw = formData.get("sponsors")?.toString();
+    if (raw) sponsors = JSON.parse(raw);
+  } catch {}
+
   const payload: any = {
     slug,
     name,
@@ -132,6 +172,17 @@ export async function saveEventAction(prevState: any, formData: FormData) {
     registration_open: registrationOpen,
     themes,
     banner_image: bannerImage,
+    date_label: dateLabel,
+    venue_label: venueLabel,
+    is_tentative: isTentative,
+    attendees,
+    projects_shipped: projectsShipped,
+    gallery_tiles: galleryTiles,
+    schedule,
+    prizes,
+    speakers,
+    mentors,
+    sponsors,
     updated_at: new Date().toISOString(),
   };
 
