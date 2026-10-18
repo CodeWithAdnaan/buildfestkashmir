@@ -7,6 +7,7 @@ import type { BuildFestEvent } from "@/types/event";
 import { saveEventAction, deleteEventAction } from "@/app/admin/events/actions";
 import { Button } from "@/components/ui/button";
 import { EventBannerPicker } from "@/components/admin/event-banner-picker";
+import { DateTimePicker } from "@/components/admin/date-time-picker";
 
 interface EventFormProps {
   initialEvent?: BuildFestEvent;
@@ -16,14 +17,6 @@ export function EventForm({ initialEvent }: EventFormProps) {
   const isEditing = Boolean(initialEvent);
   const [state, formAction, isPending] = useActionState(saveEventAction, null);
   const [isDeleting, setIsDeleting] = useState(false);
-
-  const defaultStartDate = initialEvent?.startDate
-    ? new Date(initialEvent.startDate).toISOString().slice(0, 16)
-    : new Date().toISOString().slice(0, 16);
-
-  const defaultEndDate = initialEvent?.endDate
-    ? new Date(initialEvent.endDate).toISOString().slice(0, 16)
-    : new Date(Date.now() + 86400000).toISOString().slice(0, 16);
 
   const handleDelete = async () => {
     if (!initialEvent) return;
@@ -206,31 +199,19 @@ export function EventForm({ initialEvent }: EventFormProps) {
             />
           </div>
 
-          <div>
-            <label className="block text-xs font-mono text-ink-muted mb-1.5">
-              Start Date & Time *
-            </label>
-            <input
-              type="datetime-local"
-              name="startDate"
-              required
-              defaultValue={defaultStartDate}
-              className="w-full rounded-xl border border-border bg-canvas px-3.5 py-2.5 text-sm font-mono text-ink focus:border-saffron focus:outline-none"
-            />
-          </div>
+          <DateTimePicker
+            name="startDate"
+            label="Start Date & Time"
+            defaultValue={initialEvent?.startDate}
+            required
+          />
 
-          <div>
-            <label className="block text-xs font-mono text-ink-muted mb-1.5">
-              End Date & Time *
-            </label>
-            <input
-              type="datetime-local"
-              name="endDate"
-              required
-              defaultValue={defaultEndDate}
-              className="w-full rounded-xl border border-border bg-canvas px-3.5 py-2.5 text-sm font-mono text-ink focus:border-saffron focus:outline-none"
-            />
-          </div>
+          <DateTimePicker
+            name="endDate"
+            label="End Date & Time"
+            defaultValue={initialEvent?.endDate}
+            required
+          />
         </div>
       </div>
 
