@@ -2,6 +2,7 @@ import Link from "next/link";
 import { Plus, ExternalLink, Edit3, Calendar, CheckCircle2, XCircle } from "lucide-react";
 import { getEvents } from "@/lib/data/events";
 import { Button } from "@/components/ui/button";
+import { DeleteEventButton } from "@/components/admin/delete-event-button";
 
 export const revalidate = 0;
 
@@ -92,9 +93,10 @@ export default async function AdminEventsListPage() {
                   <Button asChild size="sm" className="bg-canvas-overlay text-ink hover:bg-canvas-raised text-xs font-mono border border-border">
                     <Link href={`/admin/events/${event.slug}`} className="flex items-center gap-1.5">
                       <Edit3 className="h-3.5 w-3.5 text-saffron" />
-                      <span>Edit Event</span>
+                      <span>Edit</span>
                     </Link>
                   </Button>
+                  <DeleteEventButton slug={event.slug} eventName={event.name} />
                 </div>
               </div>
             );

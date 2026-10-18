@@ -13,6 +13,7 @@ import { formatDateRange } from "@/lib/utils";
 import { featuredEvent as staticFeaturedEvent } from "@/lib/constants/events";
 import { partners } from "@/lib/constants/partners";
 import type { BuildFestEvent } from "@/types/event";
+import type { HomepageSettings } from "@/lib/data/homepage";
 
 const countdownUnits = [
   { key: "days", label: "D" },
@@ -23,9 +24,10 @@ const countdownUnits = [
 
 interface BentoGridProps {
   featuredEvent?: BuildFestEvent;
+  settings?: HomepageSettings;
 }
 
-export function BentoGrid({ featuredEvent }: BentoGridProps = {}) {
+export function BentoGrid({ featuredEvent, settings }: BentoGridProps = {}) {
   return (
     <section className="relative py-10 sm:py-16">
       <div className="container-content">
@@ -35,7 +37,7 @@ export function BentoGrid({ featuredEvent }: BentoGridProps = {}) {
               THE ECOSYSTEM
             </PillBadge>
             <h2 className="text-balance text-3xl font-semibold tracking-tight sm:text-4xl">
-              Everything happening right now.
+              {settings?.bento?.ecosystemTitle || "Everything happening right now."}
             </h2>
           </div>
         </div>

@@ -60,18 +60,25 @@ export async function deleteEventAction(slug: string) {
   await requireAdminOrOrganizer();
   const supabase = await createClient();
 
+  // 1. Delete associated registrations
+  await supabase.from("registrations").delete().eq("event_slug", slug);
+
+  // 2. Delete event from database
   const { error } = await supabase.from("events").delete().eq("slug", slug);
 
   if (error) {
-    throw new Error(error.message);
+    return { error: error.message };
   }
 
   revalidatePath("/admin");
   revalidatePath("/admin/events");
+  revalidatePath(`/admin/events/${slug}`);
   revalidatePath(`/events/${slug}`);
+  revalidatePath(`/events/${slug}/register`);
   revalidatePath("/events");
   revalidatePath("/");
-  redirect("/admin/events");
+
+  return { success: true };
 }
 
 export async function saveEventAction(prevState: any, formData: FormData) {

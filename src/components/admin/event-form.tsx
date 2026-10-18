@@ -2,6 +2,7 @@
 
 import { useActionState, useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { ArrowLeft, Save, Trash2, Loader2, AlertCircle } from "lucide-react";
 import type { BuildFestEvent } from "@/types/event";
 import { saveEventAction, deleteEventAction } from "@/app/admin/events/actions";
@@ -18,11 +19,19 @@ export function EventForm({ initialEvent }: EventFormProps) {
   const [state, formAction, isPending] = useActionState(saveEventAction, null);
   const [isDeleting, setIsDeleting] = useState(false);
 
+  const router = useRouter();
   const handleDelete = async () => {
     if (!initialEvent) return;
     if (confirm(`Are you sure you want to delete "${initialEvent.name}"? This action cannot be undone.`)) {
       setIsDeleting(true);
-      await deleteEventAction(initialEvent.slug);
+      const res = await deleteEventAction(initialEvent.slug);
+      if (res?.error) {
+        alert("Failed to delete event: " + res.error);
+        setIsDeleting(false);
+      } else {
+        router.push("/admin/events");
+        router.refresh();
+      }
     }
   };
 

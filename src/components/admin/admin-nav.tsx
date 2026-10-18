@@ -11,6 +11,7 @@ import {
   FileText,
   ArrowLeft,
   ShieldCheck,
+  Sparkles,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -33,6 +34,12 @@ const navItems = [
     label: "Events",
     href: "/admin/events",
     icon: Calendar,
+    exact: false,
+  },
+  {
+    label: "Homepage & Content",
+    href: "/admin/homepage",
+    icon: Sparkles,
     exact: false,
   },
   {

@@ -1,5 +1,6 @@
 import { createClient } from "@/lib/supabase/server";
 import { events as staticEvents } from "@/lib/constants/events";
+import { getHomepageSettings } from "@/lib/data/homepage";
 import type { BuildFestEvent } from "@/types/event";
 import type { Database } from "@/lib/supabase/types";
 
@@ -50,7 +51,9 @@ export function mapRowToEvent(row: any): BuildFestEvent {
 }
 
 /**
- * Fetch all events, prioritizing Supabase table and merging with static fallback
+ * Fetch all events from Supabase.
+ * If Supabase is operational, it is the sole source of truth (deleted events stay deleted).
+ * Only if Supabase query fails completely (e.g. offline/no connection), fallback to static constants.
  */
 export async function getEvents(): Promise<BuildFestEvent[]> {
   try {
@@ -60,11 +63,8 @@ export async function getEvents(): Promise<BuildFestEvent[]> {
       .select("*")
       .order("start_date", { ascending: false });
 
-    if (!error && data) {
-      const dbEvents = data.map(mapRowToEvent);
-      const dbSlugs = new Set(dbEvents.map((e) => e.slug));
-      const remainingStatic = staticEvents.filter((e) => !dbSlugs.has(e.slug));
-      return [...dbEvents, ...remainingStatic];
+    if (!error && Array.isArray(data)) {
+      return data.map(mapRowToEvent);
     }
   } catch {
     // Fallback if Supabase is offline or not configured
@@ -85,11 +85,15 @@ export async function getEvent(slug: string): Promise<BuildFestEvent | undefined
       .eq("slug", slug)
       .maybeSingle();
 
-    if (!error && data) {
-      return mapRowToEvent(data);
+    if (!error) {
+      if (data) {
+        return mapRowToEvent(data);
+      }
+      // If query succeeded and returned no row, the event is deleted / does not exist.
+      return undefined;
     }
   } catch {
-    // Fallback
+    // Fallback if Supabase is offline
   }
 
   return staticEvents.find((e) => e.slug === slug);
@@ -116,11 +120,27 @@ export async function getPastEvents(): Promise<BuildFestEvent[]> {
 }
 
 /**
- * Fetch featured upcoming event
+ * Fetch featured event for Homepage.
+ * Respects admin's choice from Homepage Settings if specified, otherwise picks next upcoming event.
  */
 export async function getFeaturedEvent(): Promise<BuildFestEvent | undefined> {
-  const upcoming = await getUpcomingEvents();
-  if (upcoming.length > 0) return upcoming[0];
   const all = await getEvents();
+  if (all.length === 0) return undefined;
+
+  try {
+    const settings = await getHomepageSettings();
+    if (settings.featuredEventSlug) {
+      const selected = all.find((e) => e.slug === settings.featuredEventSlug);
+      if (selected) return selected;
+    }
+  } catch {
+    // Fallback to automatic selection
+  }
+
+  const upcoming = all
+    .filter((e) => e.status === "upcoming")
+    .sort((a, b) => new Date(a.startDate).getTime() - new Date(b.startDate).getTime());
+
+  if (upcoming.length > 0) return upcoming[0];
   return all[0];
 }
