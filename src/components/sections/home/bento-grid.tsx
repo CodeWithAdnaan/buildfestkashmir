@@ -14,6 +14,7 @@ import { featuredEvent as staticFeaturedEvent } from "@/lib/constants/events";
 import { partners } from "@/lib/constants/partners";
 import type { BuildFestEvent } from "@/types/event";
 import type { HomepageSettings } from "@/lib/data/homepage";
+import type { GalleryItem } from "@/types/gallery";
 
 const countdownUnits = [
   { key: "days", label: "D" },
@@ -25,9 +26,10 @@ const countdownUnits = [
 interface BentoGridProps {
   featuredEvent?: BuildFestEvent;
   settings?: HomepageSettings;
+  galleryPhotos?: GalleryItem[];
 }
 
-export function BentoGrid({ featuredEvent, settings }: BentoGridProps = {}) {
+export function BentoGrid({ featuredEvent, settings, galleryPhotos }: BentoGridProps = {}) {
   return (
     <section className="relative py-10 sm:py-16">
       <div className="container-content">
@@ -45,7 +47,7 @@ export function BentoGrid({ featuredEvent, settings }: BentoGridProps = {}) {
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 lg:auto-rows-[minmax(200px,auto)]">
           <FeaturedEventCard event={featuredEvent} />
           <WhyBuildFestCard />
-          <GalleryCard />
+          <GalleryCard photos={galleryPhotos || featuredEvent?.photos} />
           <OpenSourceCard />
           <TestimonialCard />
           <PartnersCard />
@@ -165,13 +167,18 @@ function WhyBuildFestCard() {
   );
 }
 
-function GalleryCard() {
-  const tiles = [
+function GalleryCard({ photos }: { photos?: GalleryItem[] }) {
+  const fallbackTiles = [
     { src: "/gallery/hackdays-2025/hd-1.jpg", gradient: "from-[#3a5c48] to-[#16302a]" },
     { src: "/gallery/hackdays-2025/hd-2.jpg", gradient: "from-[#4a3a26] to-[#1c1710]" },
     { src: "/gallery/hackdays-2025/hd-3.jpg", gradient: "from-[#33574a] to-[#122320]" },
     { src: "/gallery/hackdays-2025/hd-4.jpg", gradient: "from-[#5c4426] to-[#241a0e]" },
   ];
+
+  const tiles = photos && photos.length >= 4
+    ? photos.slice(0, 4).map((p) => ({ src: p.src, gradient: p.gradient || "from-stone-800 to-stone-900" }))
+    : fallbackTiles;
+
   return (
     <BentoCard className="lg:col-span-1">
       <div className="mb-4 flex items-center justify-between">
@@ -193,12 +200,13 @@ function GalleryCard() {
                 fill
                 className="object-cover"
                 sizes="(max-width: 640px) 50vw, (max-width: 1024px) 25vw, 15vw"
+                unoptimized={tile.src.startsWith("data:") || tile.src.startsWith("blob:")}
               />
             )}
           </div>
         ))}
       </div>
-      <p className="mt-4 text-[13px] text-ink-faint">Real photos from HACKDAYS &rsquo;25.</p>
+      <p className="mt-4 text-[13px] text-ink-faint">Real photos & memories from Kashmir builders.</p>
     </BentoCard>
   );
 }

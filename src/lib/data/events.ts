@@ -47,6 +47,7 @@ export function mapRowToEvent(row: any): BuildFestEvent {
     venueLabel: row.venue_label ?? undefined,
     bannerImage: row.banner_image ?? undefined,
     registrationUrl: registrationUrl || undefined,
+    photos: Array.isArray(row.photos) ? row.photos : undefined,
   };
 }
 

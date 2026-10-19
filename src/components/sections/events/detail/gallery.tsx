@@ -16,19 +16,28 @@ const gradients = [
 ];
 
 export function Gallery({ event }: { event: BuildFestEvent }) {
-  // Find the album for this specific event
-  const album = galleryAlbums.find((a) => a.eventSlug === event.slug);
+  // Find the album for this specific event from static or dynamic registry
+  const album = galleryAlbums.find((a) => a.eventSlug === event.slug || a.slug === event.slug);
   
-  // If we have an album, use its items up to the requested galleryTiles count.
-  // Otherwise, fallback to the old gradient squares for events without photos yet.
-  const tiles = album
-    ? album.items.slice(0, event.galleryTiles)
-    : Array.from({ length: event.galleryTiles }, (_, i) => ({
-        id: `placeholder-${i}`,
-        gradient: gradients[i % gradients.length],
-        src: undefined,
-        caption: "Event photo",
-      }));
+  // Priority:
+  // 1. Explicit event.photos configured by admin
+  // 2. Album items matched by slug
+  // 3. Fallback gradient tiles if galleryTiles > 0
+  let tiles = event.photos && event.photos.length > 0
+    ? (event.galleryTiles > 0 ? event.photos.slice(0, event.galleryTiles) : event.photos)
+    : (album
+        ? (event.galleryTiles > 0 ? album.items.slice(0, event.galleryTiles) : album.items)
+        : []);
+
+  if (tiles.length === 0 && event.galleryTiles > 0) {
+    tiles = Array.from({ length: event.galleryTiles }, (_, i) => ({
+      id: `placeholder-${i}`,
+      gradient: gradients[i % gradients.length],
+      src: undefined,
+      caption: "Event photo",
+      span: "sm",
+    }));
+  }
 
   if (tiles.length === 0) return null;
 

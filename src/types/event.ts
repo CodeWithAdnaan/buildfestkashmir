@@ -1,3 +1,5 @@
+import type { GalleryItem } from "@/types/gallery";
+
 export type EventStatus = "upcoming" | "past";
 
 export interface ScheduleItem {
@@ -58,4 +60,5 @@ export interface BuildFestEvent {
   venueLabel?: string;
   bannerImage?: string;
   registrationUrl?: string;
+  photos?: GalleryItem[];
 }

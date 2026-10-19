@@ -1,20 +1,27 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { AlbumSection } from "@/components/sections/gallery/album-section";
 import { Lightbox, type FlatGalleryItem } from "@/components/sections/gallery/lightbox";
-import { galleryAlbums } from "@/lib/constants/gallery";
+import { galleryAlbums as defaultAlbums } from "@/lib/constants/gallery";
+import type { GalleryAlbum } from "@/types/gallery";
 
-const flatItems: FlatGalleryItem[] = galleryAlbums.flatMap((album) =>
-  album.items.map((item) => ({ ...item, albumTitle: album.title })),
-);
+interface GalleryContentProps {
+  albums?: GalleryAlbum[];
+}
 
-export function GalleryContent() {
+export function GalleryContent({ albums = defaultAlbums }: GalleryContentProps) {
   const [openId, setOpenId] = useState<string | null>(null);
+
+  const flatItems: FlatGalleryItem[] = useMemo(() => {
+    return (albums || []).flatMap((album) =>
+      album.items.map((item) => ({ ...item, albumTitle: album.title })),
+    );
+  }, [albums]);
 
   return (
     <>
-      {galleryAlbums.map((album) => (
+      {(albums || []).map((album) => (
         <AlbumSection key={album.slug} album={album} onSelect={setOpenId} />
       ))}
       <Lightbox items={flatItems} openId={openId} onOpenChange={setOpenId} />

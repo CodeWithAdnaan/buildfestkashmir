@@ -4,6 +4,9 @@ import { SiteFooter } from "@/components/layout/site-footer";
 import { GalleryHero } from "@/components/sections/gallery/gallery-hero";
 import { GalleryContent } from "@/components/sections/gallery/gallery-content";
 import { siteConfig } from "@/lib/constants/site";
+import { getGalleryAlbums } from "@/lib/data/gallery";
+
+export const revalidate = 0;
 
 export const metadata: Metadata = {
   title: "Gallery",
@@ -16,13 +19,15 @@ export const metadata: Metadata = {
   },
 };
 
-export default function GalleryPage() {
+export default async function GalleryPage() {
+  const albums = await getGalleryAlbums();
+
   return (
     <>
       <SiteHeader />
       <main>
         <GalleryHero />
-        <GalleryContent />
+        <GalleryContent albums={albums} />
       </main>
       <SiteFooter />
     </>

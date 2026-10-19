@@ -12,6 +12,7 @@ import {
   ArrowLeft,
   ShieldCheck,
   Sparkles,
+  ImageIcon,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -34,6 +35,12 @@ const navItems = [
     label: "Events",
     href: "/admin/events",
     icon: Calendar,
+    exact: false,
+  },
+  {
+    label: "Gallery & Photos",
+    href: "/admin/gallery",
+    icon: ImageIcon,
     exact: false,
   },
   {

@@ -16,5 +16,14 @@ export default async function AdminEditEventPage({
     notFound();
   }
 
+  // Pre-populate existing photos if not stored on the event record
+  if (!event.photos || event.photos.length === 0) {
+    const { getEventPhotos } = await import("@/lib/data/gallery");
+    const photos = await getEventPhotos(slug);
+    if (photos && photos.length > 0) {
+      event.photos = photos;
+    }
+  }
+
   return <EventForm initialEvent={event} />;
 }

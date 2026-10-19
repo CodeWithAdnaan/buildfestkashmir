@@ -11,6 +11,10 @@ const g = [
   "from-[#5a3c2e] to-[#231710]",
 ];
 
+export function getRandomGradient(): string {
+  return g[Math.floor(Math.random() * g.length)];
+}
+
 export const galleryAlbums: GalleryAlbum[] = [
   {
     slug: "hackdays-srinagar-2026",

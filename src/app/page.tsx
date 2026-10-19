@@ -9,6 +9,7 @@ import { Faq } from "@/components/sections/home/faq";
 import { siteConfig } from "@/lib/constants/site";
 import { getFeaturedEvent } from "@/lib/data/events";
 import { getHomepageSettings } from "@/lib/data/homepage";
+import { getGalleryAlbums } from "@/lib/data/gallery";
 
 export const revalidate = 0;
 
@@ -19,10 +20,13 @@ export const metadata: Metadata = {
 };
 
 export default async function HomePage() {
-  const [featuredEvent, settings] = await Promise.all([
+  const [featuredEvent, settings, galleryAlbums] = await Promise.all([
     getFeaturedEvent(),
     getHomepageSettings(),
+    getGalleryAlbums(),
   ]);
+
+  const latestPhotos = galleryAlbums[0]?.items || [];
 
   return (
     <>
@@ -47,7 +51,7 @@ export default async function HomePage() {
       <SiteHeader />
       <main>
         <Hero featuredEvent={featuredEvent} settings={settings} />
-        <BentoGrid featuredEvent={featuredEvent} settings={settings} />
+        <BentoGrid featuredEvent={featuredEvent} settings={settings} galleryPhotos={latestPhotos} />
         <Faq />
       </main>
       <SiteFooter />

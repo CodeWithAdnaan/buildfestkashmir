@@ -17,6 +17,7 @@ import {
   Handshake,
   BarChart3,
   Sparkles,
+  ImageIcon,
 } from "lucide-react";
 import type {
   BuildFestEvent,
@@ -26,10 +27,12 @@ import type {
   Mentor,
   Sponsor,
 } from "@/types/event";
+import type { GalleryItem } from "@/types/gallery";
 import { saveEventAction, deleteEventAction } from "@/app/admin/events/actions";
 import { Button } from "@/components/ui/button";
 import { EventBannerPicker } from "@/components/admin/event-banner-picker";
 import { DateTimePicker } from "@/components/admin/date-time-picker";
+import { EventPhotosManager } from "@/components/admin/event-photos-manager";
 
 interface EventFormProps {
   initialEvent?: BuildFestEvent;
@@ -46,6 +49,7 @@ export function EventForm({ initialEvent }: EventFormProps) {
   const [speakers, setSpeakers] = useState<Speaker[]>(() => initialEvent?.speakers || []);
   const [mentors, setMentors] = useState<Mentor[]>(() => initialEvent?.mentors || []);
   const [sponsors, setSponsors] = useState<Sponsor[]>(() => initialEvent?.sponsors || []);
+  const [photos, setPhotos] = useState<GalleryItem[]>(() => initialEvent?.photos || []);
   const [isTentative, setIsTentative] = useState(() => initialEvent?.isTentative ?? false);
 
   const router = useRouter();
@@ -216,6 +220,7 @@ export function EventForm({ initialEvent }: EventFormProps) {
       <input type="hidden" name="speakers" value={JSON.stringify(speakers)} />
       <input type="hidden" name="mentors" value={JSON.stringify(mentors)} />
       <input type="hidden" name="sponsors" value={JSON.stringify(sponsors)} />
+      <input type="hidden" name="photos" value={JSON.stringify(photos)} />
       <input type="hidden" name="isTentative" value={isTentative ? "true" : "false"} />
 
       {/* 1. Basic Details Section */}
@@ -931,6 +936,24 @@ export function EventForm({ initialEvent }: EventFormProps) {
             />
           </div>
         </div>
+      </div>
+
+      {/* 10. Event Photos & Gallery Section */}
+      <div className="rounded-2xl border border-border bg-canvas-raised/30 p-6 space-y-6">
+        <div>
+          <h2 className="text-sm font-semibold text-ink uppercase tracking-wider font-mono text-saffron flex items-center gap-2">
+            <ImageIcon className="h-4 w-4" /> 10. Event Photos & Gallery ({photos.length})
+          </h2>
+          <p className="text-xs font-mono text-ink-muted mt-1">
+            Upload and manage photos & video clips for this hackathon. These appear on the event page and the main website gallery.
+          </p>
+        </div>
+
+        <EventPhotosManager
+          initialPhotos={photos}
+          onChange={setPhotos}
+          albumTitle={initialEvent?.name || "Event"}
+        />
       </div>
 
       {/* Bottom Sticky Action Bar */}

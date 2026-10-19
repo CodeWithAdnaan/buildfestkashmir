@@ -70,12 +70,19 @@ export async function deleteEventAction(slug: string) {
     return { error: error.message };
   }
 
+  // 3. Delete associated gallery album if present
+  try {
+    const { deleteAlbumAction } = await import("@/app/admin/gallery/actions");
+    await deleteAlbumAction(slug);
+  } catch {}
+
   revalidatePath("/admin");
   revalidatePath("/admin/events");
   revalidatePath(`/admin/events/${slug}`);
   revalidatePath(`/events/${slug}`);
   revalidatePath(`/events/${slug}/register`);
   revalidatePath("/events");
+  revalidatePath("/gallery");
   revalidatePath("/");
 
   return { success: true };
@@ -156,6 +163,12 @@ export async function saveEventAction(prevState: any, formData: FormData) {
     if (raw) sponsors = JSON.parse(raw);
   } catch {}
 
+  let photos = [];
+  try {
+    const raw = formData.get("photos")?.toString();
+    if (raw) photos = JSON.parse(raw);
+  } catch {}
+
   const payload: any = {
     slug,
     name,
@@ -177,18 +190,22 @@ export async function saveEventAction(prevState: any, formData: FormData) {
     is_tentative: isTentative,
     attendees,
     projects_shipped: projectsShipped,
-    gallery_tiles: galleryTiles,
+    gallery_tiles: galleryTiles || (photos.length > 0 ? photos.length : 0),
     schedule,
     prizes,
     speakers,
     mentors,
     sponsors,
+    photos,
     updated_at: new Date().toISOString(),
   };
 
   // Helper to execute update or insert with fallback if column doesn't exist
-  const executeDbOp = async (withCol = true): Promise<{ error?: string }> => {
+  const executeDbOp = async (withCol = true, withPhotos = true): Promise<{ error?: string }> => {
     const opPayload = { ...payload };
+    if (!withPhotos) {
+      delete opPayload.photos;
+    }
     if (withCol && registrationUrl) {
       opPayload.registration_url = registrationUrl;
     }
@@ -201,8 +218,11 @@ export async function saveEventAction(prevState: any, formData: FormData) {
         .select();
 
       if (error) {
+        if (withPhotos && (error.code === "42703" || error.message.includes("photos"))) {
+          return executeDbOp(withCol, false);
+        }
         if (withCol && (error.code === "42703" || error.message.includes("registration_url"))) {
-          return executeDbOp(false);
+          return executeDbOp(false, withPhotos);
         }
         return { error: error.message };
       }
@@ -210,8 +230,11 @@ export async function saveEventAction(prevState: any, formData: FormData) {
       if (!data || data.length === 0) {
         const { error: insertError } = await supabase.from("events").insert([opPayload]);
         if (insertError) {
+          if (withPhotos && (insertError.code === "42703" || insertError.message.includes("photos"))) {
+            return executeDbOp(withCol, false);
+          }
           if (withCol && (insertError.code === "42703" || insertError.message.includes("registration_url"))) {
-            return executeDbOp(false);
+            return executeDbOp(false, withPhotos);
           }
           return { error: insertError.message };
         }
@@ -219,8 +242,11 @@ export async function saveEventAction(prevState: any, formData: FormData) {
     } else {
       const { error } = await supabase.from("events").insert([opPayload]);
       if (error) {
+        if (withPhotos && (error.code === "42703" || error.message.includes("photos"))) {
+          return executeDbOp(withCol, false);
+        }
         if (withCol && (error.code === "42703" || error.message.includes("registration_url"))) {
-          return executeDbOp(false);
+          return executeDbOp(false, withPhotos);
         }
         return { error: error.message };
       }
@@ -229,10 +255,36 @@ export async function saveEventAction(prevState: any, formData: FormData) {
     return {};
   };
 
-  const dbRes = await executeDbOp(true);
+  const dbRes = await executeDbOp(true, true);
   if (dbRes.error) {
     return { error: dbRes.error };
   }
+
+  // Also sync photos to the gallery albums so /gallery automatically reflects this event's photos
+  try {
+    const { getGalleryAlbums } = await import("@/lib/data/gallery");
+    const { saveGalleryAlbumsAction } = await import("@/app/admin/gallery/actions");
+    const albums = await getGalleryAlbums();
+    const existingIndex = albums.findIndex((a) => a.eventSlug === slug || a.slug === slug);
+    const updatedAlbum = {
+      slug,
+      title: name,
+      eventSlug: slug,
+      date: dateLabel || new Date(startDate).toLocaleDateString("en-US", { month: "long", year: "numeric" }),
+      items: photos,
+    };
+
+    let updatedAlbums;
+    if (existingIndex >= 0) {
+      updatedAlbums = [...albums];
+      updatedAlbums[existingIndex] = updatedAlbum;
+    } else if (photos.length > 0) {
+      updatedAlbums = [updatedAlbum, ...albums];
+    } else {
+      updatedAlbums = albums;
+    }
+    await saveGalleryAlbumsAction(updatedAlbums);
+  } catch {}
 
   revalidatePath("/admin");
   revalidatePath("/admin/events");
